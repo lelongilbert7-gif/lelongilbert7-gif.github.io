@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gilbert Kiptoo — Shopify Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-card: #111111;
+    --bg-elevated: #181818;
+    --accent: #00e5a0;
+    --accent-dim: #00b37a;
+    --accent-glow: rgba(0, 229, 160, 0.12);
+    --text: #f0ede8;
+    --text-muted: #8a8780;
+    --text-dim: #5a5755;
+    --border: rgba(255,255,255,0.07);
+    --border-accent: rgba(0, 229, 160, 0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent) !important;
+    border: 0.5px solid var(--border-accent);
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent-glow) !important;
+    color: var(--accent) !important;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 3rem 5rem;
+    position: relative;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .hero-accent-blob {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(0, 229, 160, 0.07) 0%, transparent 70%);
+    top: 20%;
+    right: -100px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-eyebrow-line {
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-eyebrow span {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-name .accent { color: var(--accent); }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-description {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 580px;
+    line-height: 1.75;
+    margin-bottom: 3rem;
+  }
+
+  .hero-description strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 4rem;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0.8rem 1.75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover {
+    background: #00ffb3;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 0.8rem 1.75rem;
+    border-radius: 4px;
+    border: 0.5px solid var(--border);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .hero-stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: 6rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-eyebrow span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+    max-width: 80px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    letter-spacing: 0.04em;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 300;
+    max-width: 540px;
+    margin-bottom: 3.5rem;
+    line-height: 1.7;
+  }
+
+  /* ─── STACK / SKILLS ─── */
+  #stack {
+    border-top: 0.5px solid var(--border);
+    padding: 4rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .stack-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .stack-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border: 0.5px solid var(--border);
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .pill:hover {
+    border-color: var(--border-accent);
+    color: var(--accent);
+  }
+
+  .pill.highlight {
+    border-color: var(--border-accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  /* ─── PROJECTS ─── */
+  #projects {
+    border-top: 0.5px solid var(--border);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .project-card {
+    background: var(--bg-card);
+    padding: 2.5rem;
+    position: relative;
+    transition: background 0.25s;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .project-card:hover {
+    background: var(--bg-elevated);
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  .project-card:hover::after { width: 100%; }
+
+  .project-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    color: var(--accent-dim);
+    background: rgba(0, 229, 160, 0.08);
+    border: 0.5px solid rgba(0, 229, 160, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+  }
+
+  .project-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .project-findings {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    border-left: 2px solid var(--accent);
+  }
+
+  .finding-item {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .finding-item::before {
+    content: '→ ';
+    color: var(--accent);
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .project-link::after { content: ' →'; }
+  .project-link:hover { color: #00ffb3; }
+
+  /* ─── SERVICES ─── */
+  #services {
+    border-top: 0.5px solid var(--border);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .service-card {
+    padding: 2rem;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: background 0.2s;
+  }
+
+  .service-card:hover { background: var(--bg-elevated); }
+
+  .service-icon {
+    font-size: 24px;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+
+  .service-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .service-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ─── ABOUT ─── */
+  #about {
+    border-top: 0.5px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-body {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.8;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .about-body p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .about-quote {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25rem;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
+
+  .about-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .tool-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .tool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tool-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .tool-level {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .tool-bar-bg {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .tool-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transform-origin: left;
+    animation: barGrow 1.2s ease forwards;
+    transform: scaleX(0);
+  }
+
+  @keyframes barGrow {
+    to { transform: scaleX(1); }
+  }
+
+  /* ─── CONTACT / CTA ─── */
+  #contact {
+    border-top: 0.5px solid var(--border);
+    text-align: center;
+    padding: 6rem 3rem 8rem;
+  }
+
+  .contact-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .contact-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-title .accent { color: var(--accent); }
+
+  .contact-sub {
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .footer-tag span { color: var(--accent); }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section, #hero, #stack, #contact { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-stats { gap: 2rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">GK.analytics</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact" class="nav-cta">Work with me</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-accent-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow fade-up">
+      <div class="hero-eyebrow-line"></div>
+      <span>Shopify Data Analyst · Nairobi, Kenya</span>
+    </div>
+    <h1 class="hero-name fade-up" style="transition-delay:0.1s">
+      GILBERT<br><span class="accent">KIPTOO</span>
+    </h1>
+    <p class="hero-title fade-up" style="transition-delay:0.18s">AI-Augmented Analytics</p>
+    <p class="hero-description fade-up" style="transition-delay:0.26s">
+      I help Shopify merchants build <strong>clarity from their data.</strong> Using SQL, BigQuery, Power BI, Python, and AI tools, I deliver profitability analysis, customer insights, and <strong>automated daily reporting systems</strong> that replace manual spreadsheets for good.
+    </p>
+    <div class="hero-ctas fade-up" style="transition-delay:0.34s">
+      <a href="#projects" class="btn-primary">View my projects</a>
+      <a href="#contact" class="btn-secondary">Let's talk</a>
+    </div>
+    <div class="hero-stats fade-up" style="transition-delay:0.42s">
+      <div>
+        <div class="hero-stat-value">2</div>
+        <div class="hero-stat-label">End-to-end projects</div>
+      </div>
+      <div>
+        <div class="hero-stat-value">BigQuery</div>
+        <div class="hero-stat-label">Cloud warehouse</div>
+      </div>
+      <div>
+        <div class="hero-stat-value">AI+</div>
+        <div class="hero-stat-label">Augmented delivery</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK STRIP -->
+<div id="stack">
+  <p class="stack-label">Tech stack</p>
+  <div class="stack-pills">
+    <span class="pill highlight">BigQuery</span>
+    <span class="pill highlight">SQL</span>
+    <span class="pill highlight">Power BI</span>
+    <span class="pill">DAX</span>
+    <span class="pill">Python</span>
+    <span class="pill">pandas</span>
+    <span class="pill">ETL Pipelines</span>
+    <span class="pill">Google Cloud</span>
+    <span class="pill">GitHub</span>
+    <span class="pill">Claude AI</span>
+    <span class="pill">Shopify Data</span>
+    <span class="pill">Data Storytelling</span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-eyebrow"><span>Portfolio</span></div>
+  <h2 class="section-title">Selected Work</h2>
+  <p class="section-subtitle">End-to-end projects built on realistic Shopify-style datasets — from messy raw CSV files to business decisions. Third project dropping this weekend.</p>
+
+  <div class="projects-grid">
+
+    <!-- PROJECT 1 -->
+    <a class="project-card fade-up" href="https://github.com/lelongilbert7-gif/Shopify-Northstar-trail-supply-analytics" target="_blank" rel="noopener">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <span class="project-number">01</span>
+        <div class="project-tags">
+          <span class="tag">BigQuery</span>
+          <span class="tag">SQL</span>
+          <span class="tag">9-Table Dataset</span>
+        </div>
+      </div>
+      <h3 class="project-title">Northstar Trail Supply Analytics</h3>
+      <p class="project-desc">
+        End-to-end analysis of a realistic messy Shopify dataset spanning 9 raw CSV tables — customers, orders, refunds, inventory, marketing, FX rates, and more. Built to mirror the kind of data chaos a real ecommerce analyst inherits on day one.
+      </p>
+      <div class="project-findings">
+        <span class="finding-item">Gross revenue $286K · net $271K · 5.3% refund rate identified</span>
+        <span class="finding-item">Top 2 SKUs (Trail Brew Blend + High Ridge Espresso) drive 36%+ of revenue — dangerous SKU concentration flagged</span>
+        <span class="finding-item">Revenue grew steadily through 2024, peaked in Q4, stabilized at a higher 2025 baseline — seasonality confirmed</span>
+        <span class="finding-item">Full cleaning pipeline across 9 tables: timestamps, nulls, type mismatches, boolean fields, guest checkout gaps</span>
+      </div>
+      <span class="project-link">View on GitHub</span>
+    </a>
+
+    <!-- PROJECT 2 -->
+    <a class="project-card fade-up" href="https://github.com/lelongilbert7-gif/Bluepeak-Commerce-Shopify-Analytics" target="_blank" rel="noopener" style="transition-delay:0.1s">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <span class="project-number">02</span>
+        <div class="project-tags">
+          <span class="tag">BigQuery</span>
+          <span class="tag">SQL</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">Profitability</span>
+        </div>
+      </div>
+      <h3 class="project-title">BluePeak Commerce: Profit Leakage Analysis</h3>
+      <p class="project-desc">
+        Full-stack analytics project — BigQuery warehouse, staged data model, profitability fact table, and Power BI dashboard. Built to answer the hardest question in ecommerce: not "what is our revenue?" but "where is the money actually going?"
+      </p>
+      <div class="project-findings">
+        <span class="finding-item">$94.2K revenue · $38.6K contribution profit · 40.9% margin — but margin under pressure</span>
+        <span class="finding-item">5 products with refund rates above 10% identified; SUMMER20 discount delivering only 25.8% margin vs BUNDLE15 at 38.3%</span>
+        <span class="finding-item">Top 20% of customers generated $19.9K — more than half of total profit; repeat buyers with 5–7 orders dominate</span>
+        <span class="finding-item">Google Ads (43.5%) and Email (43.2%) outperform Affiliate (30.3%) — reallocation recommended</span>
+      </div>
+      <span class="project-link">View on GitHub</span>
+    </a>
+
+    <!-- PROJECT 3 — COMING SUNDAY -->
+    <div class="project-card fade-up" style="transition-delay:0.2s; opacity:0.6; cursor:default; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:1.25rem; right:1.25rem; font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); border:0.5px solid var(--border-accent); padding:0.2rem 0.6rem; border-radius:3px; letter-spacing:0.08em;">DROPPING SUNDAY</div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <span class="project-number">03</span>
+        <div class="project-tags">
+          <span class="tag">BigQuery</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">Live Pipeline</span>
+        </div>
+      </div>
+      <h3 class="project-title" style="color:var(--text-muted);">Live Shopify Analytics Pipeline</h3>
+      <p class="project-desc">
+        A fully automated end-to-end pipeline — raw Shopify data flowing into BigQuery, cleaned and modeled, then surfaced in a live Power BI dashboard. The working prototype of the system I build for clients who want to wake up to yesterday's numbers automatically.
+      </p>
+      <div class="project-findings">
+        <span class="finding-item">BigQuery → Power BI live connection with scheduled refresh</span>
+        <span class="finding-item">Automated daily reporting — no manual exports, no spreadsheets</span>
+        <span class="finding-item">Executive dashboard: revenue, margins, refunds, top products</span>
+      </div>
+      <span style="display:inline-flex; align-items:center; gap:0.5rem; font-size:12px; font-family:'DM Mono',monospace; color:var(--text-dim); padding-top:0.5rem; border-top:0.5px solid var(--border); margin-top:auto;">In progress — check back Sunday</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-eyebrow"><span>What I do</span></div>
+  <h2 class="section-title">Services</h2>
+  <p class="section-subtitle">Built specifically for Shopify merchants who are ready to stop guessing and start deciding with data.</p>
+
+  <div class="services-grid">
+    <div class="service-card fade-up">
+      <span class="service-icon">⬡</span>
+      <div class="service-name">Shopify Data Extraction & ETL</div>
+      <p class="service-desc">Clean, structure, and load your raw Shopify data into BigQuery. One-time setup or recurring pipeline — your data becomes a reliable asset.</p>
+    </div>
+    <div class="service-card fade-up" style="transition-delay:0.08s">
+      <span class="service-icon">◈</span>
+      <div class="service-name">Profitability & Revenue Analysis</div>
+      <p class="service-desc">Deep SQL analysis to identify your most profitable products, channels, and customer segments. Delivered with clear, actionable recommendations.</p>
+    </div>
+    <div class="service-card fade-up" style="transition-delay:0.16s">
+      <span class="service-icon">◉</span>
+      <div class="service-name">Customer Insights & Segmentation</div>
+      <p class="service-desc">RFM analysis, cohort tracking, and retention breakdowns. Know exactly who your best customers are and how to keep them.</p>
+    </div>
+    <div class="service-card fade-up" style="transition-delay:0.24s">
+      <span class="service-icon">⬕</span>
+      <div class="service-name">Power BI Dashboards</div>
+      <p class="service-desc">Interactive dashboards connected to BigQuery — built for Shopify operators who want live answers, not weekly spreadsheets.</p>
+    </div>
+    <div class="service-card fade-up" style="transition-delay:0.32s">
+      <span class="service-icon">◎</span>
+      <div class="service-name">Automated Daily Reporting</div>
+      <p class="service-desc">Pipelines that run themselves. Wake up to yesterday's store performance — revenue, margins, best sellers — already in your inbox.</p>
+    </div>
+    <div class="service-card fade-up" style="transition-delay:0.40s">
+      <span class="service-icon">⬡</span>
+      <div class="service-name">One-time Data Audits</div>
+      <p class="service-desc">Not sure what your data is telling you? A focused audit of your Shopify reports to find the gaps, risks, and opportunities you're missing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-eyebrow"><span>About</span></div>
+  <h2 class="section-title">The Analyst</h2>
+  <div class="about-grid">
+    <div class="about-body fade-up">
+      <p>I'm Gilbert Kiptoo, a <strong>data analyst based in Nairobi, Kenya</strong> specialising in Shopify merchant analytics. I combine deep SQL and BigQuery expertise with Power BI dashboards and Python automation to deliver the kind of data infrastructure that used to require a whole team.</p>
+      <p>My edge is being <strong>AI-augmented</strong> — I use tools like Claude to move faster, go deeper, and deliver more polished output than a traditional analyst working alone. This keeps my cost to clients low and my quality high.</p>
+      <p>My long-term goal is building fully automated analytics pipelines for Shopify brands: live data flowing from your store to BigQuery to a dashboard to your inbox — daily, automatically, without you touching a spreadsheet.</p>
+      <blockquote class="about-quote">
+        "My white whale is building live data pipelines that give Shopify brands the analytics of a funded startup — at the cost of a freelancer."
+      </blockquote>
+    </div>
+    <div class="about-tools fade-up" style="transition-delay:0.15s">
+      <div class="tool-row">
+        <div class="tool-header">
+          <span class="tool-name">SQL / BigQuery</span>
+          <span class="tool-level">Advanced</span>
+        </div>
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:88%"></div></div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-header">
+          <span class="tool-name">Power BI / DAX</span>
+          <span class="tool-level">Intermediate–Advanced</span>
+        </div>
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:76%; animation-delay:0.15s"></div></div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-header">
+          <span class="tool-name">Python / pandas</span>
+          <span class="tool-level">Intermediate</span>
+        </div>
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:60%; animation-delay:0.3s"></div></div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-header">
+          <span class="tool-name">Data Storytelling</span>
+          <span class="tool-level">Strong</span>
+        </div>
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:82%; animation-delay:0.45s"></div></div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-header">
+          <span class="tool-name">ETL / Pipeline design</span>
+          <span class="tool-level">Building</span>
+        </div>
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:50%; animation-delay:0.6s"></div></div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-header">
+          <span class="tool-name">AI-augmented workflow</span>
+          <span class="tool-level">Core practice</span>
+        </div>
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:90%; animation-delay:0.75s"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-eyebrow" style="justify-content:center; margin-bottom:1.5rem;"><span>Let's work together</span></div>
+    <h2 class="contact-title fade-up">
+      READY TO<br><span class="accent">MOVE FASTER</span><br>WITH YOUR DATA?
+    </h2>
+    <p class="contact-sub fade-up" style="transition-delay:0.1s">
+      If you're a Shopify merchant spending hours in spreadsheets — or not looking at your data at all — let's talk. I'll tell you exactly what I can build for you and what it would cost.
+    </p>
+    <div class="contact-links fade-up" style="transition-delay:0.2s">
+      <a href="mailto:lelongilbert7@gmail.com" class="btn-primary">Email me directly</a>
+      <a href="https://github.com/lelongilbert7-gif" target="_blank" class="btn-secondary">GitHub</a>
+      <a href="https://www.linkedin.com/in/gilbert-kiptoo-346ba1191/" target="_blank" class="btn-secondary">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2026 Gilbert Kiptoo · Nairobi, Kenya</span>
+  <span class="footer-tag">Built for <span>Shopify merchants</span></span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
