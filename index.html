@@ -3,986 +3,984 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gilbert Kiptoo — Shopify Data Analyst</title>
+<title>Gilbert Kiptoo — Microsoft Fabric Analytics Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --bg-card: #111111;
-    --bg-elevated: #181818;
-    --accent: #00e5a0;
-    --accent-dim: #00b37a;
-    --accent-glow: rgba(0, 229, 160, 0.12);
-    --text: #f0ede8;
-    --text-muted: #8a8780;
-    --text-dim: #5a5755;
-    --border: rgba(255,255,255,0.07);
-    --border-accent: rgba(0, 229, 160, 0.25);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* ─── NOISE TEXTURE OVERLAY ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ─── NAV ─── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 3rem;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    letter-spacing: 0.08em;
-    text-decoration: none;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--text-muted);
-    text-decoration: none;
-    letter-spacing: 0.04em;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--text); }
-
-  .nav-cta {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--accent) !important;
-    border: 0.5px solid var(--border-accent);
-    padding: 0.4rem 1rem;
-    border-radius: 4px;
-    transition: background 0.2s, color 0.2s !important;
-  }
-
-  .nav-cta:hover {
-    background: var(--accent-glow) !important;
-    color: var(--accent) !important;
-  }
-
-  /* ─── HERO ─── */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 8rem 3rem 5rem;
-    position: relative;
-  }
-
-  .hero-grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
-    pointer-events: none;
-  }
-
-  .hero-accent-blob {
-    position: absolute;
-    width: 600px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(0, 229, 160, 0.07) 0%, transparent 70%);
-    top: 20%;
-    right: -100px;
-    pointer-events: none;
-  }
-
-  .hero-inner {
-    position: relative;
-    max-width: 1100px;
-    width: 100%;
-  }
-
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-eyebrow-line {
-    width: 32px;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  .hero-eyebrow span {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .hero-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(72px, 10vw, 130px);
-    line-height: 0.92;
-    letter-spacing: 0.02em;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-
-  .hero-name .accent { color: var(--accent); }
-
-  .hero-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(28px, 4vw, 52px);
-    line-height: 1;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-    margin-bottom: 2.5rem;
-  }
-
-  .hero-description {
-    font-size: 17px;
-    font-weight: 300;
-    color: var(--text-muted);
-    max-width: 580px;
-    line-height: 1.75;
-    margin-bottom: 3rem;
-  }
-
-  .hero-description strong {
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .hero-ctas {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 4rem;
-  }
-
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--accent);
-    color: #0a0a0a;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 0.8rem 1.75rem;
-    border-radius: 4px;
-    text-decoration: none;
-    letter-spacing: 0.02em;
-    transition: background 0.2s, transform 0.15s;
-  }
-
-  .btn-primary:hover {
-    background: #00ffb3;
-    transform: translateY(-1px);
-  }
-
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: transparent;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    padding: 0.8rem 1.75rem;
-    border-radius: 4px;
-    border: 0.5px solid var(--border);
-    text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--accent);
-    background: var(--accent-glow);
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 3rem;
-    flex-wrap: wrap;
-  }
-
-  .hero-stat-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    color: var(--accent);
-    letter-spacing: 0.04em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .hero-stat-label {
-    font-size: 12px;
-    color: var(--text-dim);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ─── SECTION BASE ─── */
-  section {
-    padding: 6rem 3rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .section-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .section-eyebrow span {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .section-eyebrow::after {
-    content: '';
-    flex: 1;
-    height: 0.5px;
-    background: var(--border);
-    max-width: 80px;
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 5vw, 56px);
-    letter-spacing: 0.04em;
-    color: var(--text);
-    margin-bottom: 1rem;
-    line-height: 1;
-  }
-
-  .section-subtitle {
-    font-size: 16px;
-    color: var(--text-muted);
-    font-weight: 300;
-    max-width: 540px;
-    margin-bottom: 3.5rem;
-    line-height: 1.7;
-  }
-
-  /* ─── STACK / SKILLS ─── */
-  #stack {
-    border-top: 0.5px solid var(--border);
-    padding: 4rem 3rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .stack-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-  }
-
-  .stack-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-
-  .pill {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--text-muted);
-    border: 0.5px solid var(--border);
-    padding: 0.35rem 0.85rem;
-    border-radius: 100px;
-    letter-spacing: 0.04em;
-    transition: border-color 0.2s, color 0.2s;
-  }
-
-  .pill:hover {
-    border-color: var(--border-accent);
-    color: var(--accent);
-  }
-
-  .pill.highlight {
-    border-color: var(--border-accent);
-    color: var(--accent);
-    background: var(--accent-glow);
-  }
-
-  /* ─── PROJECTS ─── */
-  #projects {
-    border-top: 0.5px solid var(--border);
-  }
-
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .project-card {
-    background: var(--bg-card);
-    padding: 2.5rem;
-    position: relative;
-    transition: background 0.25s;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .project-card:hover {
-    background: var(--bg-elevated);
-  }
-
-  .project-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: width 0.3s ease;
-  }
-
-  .project-card:hover::after { width: 100%; }
-
-  .project-number {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-  }
-
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .tag {
-    font-size: 10px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.06em;
-    color: var(--accent-dim);
-    background: rgba(0, 229, 160, 0.08);
-    border: 0.5px solid rgba(0, 229, 160, 0.2);
-    padding: 0.2rem 0.6rem;
-    border-radius: 3px;
-  }
-
-  .project-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.04em;
-    color: var(--text);
-    line-height: 1.1;
-  }
-
-  .project-desc {
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--text-muted);
-    line-height: 1.7;
-    flex: 1;
-  }
-
-  .project-findings {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: rgba(255,255,255,0.03);
-    border-radius: 4px;
-    border-left: 2px solid var(--accent);
-  }
-
-  .finding-item {
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    color: var(--text-muted);
-    line-height: 1.5;
-  }
-
-  .finding-item::before {
-    content: '→ ';
-    color: var(--accent);
-  }
-
-  .project-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.06em;
-    margin-top: auto;
-    padding-top: 0.5rem;
-    border-top: 0.5px solid var(--border);
-  }
-
-  .project-link::after { content: ' →'; }
-  .project-link:hover { color: #00ffb3; }
-
-  /* ─── SERVICES ─── */
-  #services {
-    border-top: 0.5px solid var(--border);
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .service-card {
-    padding: 2rem;
-    background: var(--bg-card);
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    transition: background 0.2s;
-  }
-
-  .service-card:hover { background: var(--bg-elevated); }
-
-  .service-icon {
-    font-size: 24px;
-    margin-bottom: 0.25rem;
-    display: block;
-  }
-
-  .service-name {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .service-desc {
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--text-muted);
-    line-height: 1.65;
-  }
-
-  /* ─── ABOUT ─── */
-  #about {
-    border-top: 0.5px solid var(--border);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: start;
-  }
-
-  .about-body {
-    font-size: 16px;
-    font-weight: 300;
-    color: var(--text-muted);
-    line-height: 1.8;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .about-body p strong {
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .about-quote {
-    border-left: 2px solid var(--accent);
-    padding-left: 1.25rem;
-    font-style: italic;
-    font-size: 15px;
-    color: var(--text-muted);
-    margin-top: 1rem;
-  }
-
-  .about-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .tool-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .tool-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .tool-name {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-  }
-
-  .tool-level {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .tool-bar-bg {
-    height: 2px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .tool-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transform-origin: left;
-    animation: barGrow 1.2s ease forwards;
-    transform: scaleX(0);
-  }
-
-  @keyframes barGrow {
-    to { transform: scaleX(1); }
-  }
-
-  /* ─── CONTACT / CTA ─── */
-  #contact {
-    border-top: 0.5px solid var(--border);
-    text-align: center;
-    padding: 6rem 3rem 8rem;
-  }
-
-  .contact-inner {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .contact-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 6vw, 80px);
-    letter-spacing: 0.04em;
-    color: var(--text);
-    line-height: 0.95;
-    margin-bottom: 1.5rem;
-  }
-
-  .contact-title .accent { color: var(--accent); }
-
-  .contact-sub {
-    font-size: 16px;
-    font-weight: 300;
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-  }
-
-  .contact-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    border-top: 0.5px solid var(--border);
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-copy {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.06em;
-  }
-
-  .footer-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .footer-tag span { color: var(--accent); }
-
-  /* ─── SCROLL ANIMATIONS ─── */
-  .fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .fade-up.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-    section, #hero, #stack, #contact { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .hero-stats { gap: 2rem; }
-    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-  }
+:root {
+  --bg: #060608;
+  --bg-2: #0c0c10;
+  --bg-3: #13131a;
+  --bg-4: #1a1a24;
+  --fg: #eeeaf2;
+  --fg-2: #a09aad;
+  --fg-3: #5a5468;
+  --fg-4: #2e2a38;
+  --accent: #7c6af7;
+  --accent-2: #a599ff;
+  --accent-3: #c8c0ff;
+  --accent-glow: rgba(124,106,247,0.15);
+  --accent-glow-2: rgba(124,106,247,0.06);
+  --teal: #00d4aa;
+  --teal-glow: rgba(0,212,170,0.12);
+  --amber: #f5a623;
+  --border: rgba(255,255,255,0.055);
+  --border-accent: rgba(124,106,247,0.3);
+  --r: 8px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.25s, height 0.25s, background 0.25s;
+  mix-blend-mode: screen;
+}
+#cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(124,106,247,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.18s ease, width 0.3s, height 0.3s, border-color 0.3s;
+}
+body:hover #cursor { opacity:1; }
+
+/* ── GLOBAL GRAIN OVERLAY ── */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9997; opacity:0.35;
+}
+
+/* ── AMBIENT BACKGROUND ── */
+.ambient {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  overflow:hidden;
+}
+.ambient-orb {
+  position:absolute;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:0.35;
+  animation: drift 20s ease-in-out infinite alternate;
+}
+.orb-1 { width:700px; height:500px; background:radial-gradient(ellipse, rgba(124,106,247,0.4), transparent 70%); top:-100px; right:-150px; animation-duration:22s; }
+.orb-2 { width:500px; height:600px; background:radial-gradient(ellipse, rgba(0,212,170,0.2), transparent 70%); bottom:-100px; left:-100px; animation-duration:28s; animation-delay:-8s; }
+.orb-3 { width:400px; height:400px; background:radial-gradient(ellipse, rgba(245,166,35,0.1), transparent 70%); top:40%; left:40%; animation-duration:18s; animation-delay:-4s; }
+@keyframes drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(40px,30px) scale(1.05)} }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.1rem 3rem;
+  background:rgba(6,6,8,0.7);
+  backdrop-filter:blur(24px) saturate(1.4);
+  border-bottom:0.5px solid var(--border);
+}
+.nav-logo {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:15px;
+  color:var(--fg); letter-spacing:0.02em; text-decoration:none;
+  display:flex; align-items:center; gap:0.5rem;
+}
+.nav-logo-dot { width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 10px var(--accent); }
+.nav-links { display:flex; gap:2rem; list-style:none; align-items:center; }
+.nav-links a { font-size:13px; color:var(--fg-2); text-decoration:none; letter-spacing:0.04em; transition:color 0.2s; }
+.nav-links a:hover { color:var(--fg); }
+.nav-badge {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--accent-2); background:var(--accent-glow);
+  border:0.5px solid var(--border-accent);
+  padding:0.3rem 0.75rem; border-radius:100px; letter-spacing:0.06em;
+}
+
+/* ── HERO ── */
+#hero {
+  min-height:100vh; display:flex; align-items:center;
+  padding:9rem 3rem 5rem; position:relative; z-index:1;
+}
+.hero-inner { max-width:1100px; width:100%; }
+
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:0.6rem;
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--teal); letter-spacing:0.14em; text-transform:uppercase;
+  background:var(--teal-glow); border:0.5px solid rgba(0,212,170,0.2);
+  padding:0.35rem 0.9rem; border-radius:100px; margin-bottom:2.5rem;
+}
+.hero-kicker-dot { width:6px; height:6px; background:var(--teal); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+
+.hero-name {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(60px,9vw,120px);
+  line-height:0.9; letter-spacing:-0.02em;
+  color:var(--fg); margin-bottom:0.15em;
+}
+.hero-name .line-2 {
+  display:block;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-3) 50%, var(--teal) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+.hero-role {
+  font-family:'Syne',sans-serif; font-weight:500;
+  font-size:clamp(16px,2.5vw,26px);
+  color:var(--fg-2); letter-spacing:0.04em;
+  margin-bottom:2.5rem;
+}
+
+.hero-desc {
+  font-size:17px; font-weight:400; color:var(--fg-2);
+  max-width:600px; line-height:1.8; margin-bottom:3rem;
+}
+.hero-desc strong { color:var(--fg); font-weight:600; }
+
+.hero-ctas { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:5rem; }
+
+.btn-primary {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  background:var(--accent); color:#fff;
+  font-family:'Syne',sans-serif; font-size:13px; font-weight:600;
+  padding:0.85rem 2rem; border-radius:6px; text-decoration:none;
+  letter-spacing:0.04em; transition:all 0.2s;
+  box-shadow:0 0 30px rgba(124,106,247,0.4);
+}
+.btn-primary:hover { background:var(--accent-2); transform:translateY(-2px); box-shadow:0 0 40px rgba(124,106,247,0.6); }
+
+.btn-outline {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  background:transparent; color:var(--fg);
+  font-family:'Syne',sans-serif; font-size:13px; font-weight:500;
+  padding:0.85rem 2rem; border-radius:6px; text-decoration:none;
+  border:0.5px solid var(--border); letter-spacing:0.04em; transition:all 0.2s;
+}
+.btn-outline:hover { border-color:var(--accent); background:var(--accent-glow-2); }
+
+/* Hero stats */
+.hero-metrics {
+  display:grid; grid-template-columns:repeat(4,auto); gap:0;
+  border:0.5px solid var(--border); border-radius:10px;
+  overflow:hidden; width:fit-content;
+}
+.metric {
+  padding:1.5rem 2.5rem;
+  border-right:0.5px solid var(--border);
+  background:var(--bg-2);
+}
+.metric:last-child { border-right:none; }
+.metric-val {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:28px; color:var(--accent-2);
+  line-height:1; margin-bottom:4px;
+}
+.metric-val.teal { color:var(--teal); }
+.metric-val.amber { color:var(--amber); }
+.metric-label {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--fg-3); letter-spacing:0.1em; text-transform:uppercase;
+}
+
+/* ── MARQUEE STRIP ── */
+.marquee-strip {
+  border-top:0.5px solid var(--border);
+  border-bottom:0.5px solid var(--border);
+  background:var(--bg-2);
+  overflow:hidden; padding:1rem 0;
+  position:relative; z-index:1;
+}
+.marquee-inner {
+  display:flex; gap:0; width:max-content;
+  animation:marquee 35s linear infinite;
+}
+.marquee-inner:hover { animation-play-state:paused; }
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+.marquee-item {
+  display:inline-flex; align-items:center; gap:0.6rem;
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--fg-3); letter-spacing:0.08em; white-space:nowrap;
+  padding:0 2.5rem;
+}
+.marquee-item span { color:var(--accent); }
+.marquee-sep { color:var(--fg-4); }
+
+/* ── SECTION BASE ── */
+.section {
+  padding:7rem 3rem; max-width:1200px;
+  margin:0 auto; position:relative; z-index:1;
+}
+.section-full {
+  padding:7rem 3rem; position:relative; z-index:1;
+}
+.section-divider {
+  border:none; border-top:0.5px solid var(--border);
+  margin:0; position:relative; z-index:1;
+}
+
+.eyebrow {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--accent); letter-spacing:0.16em; text-transform:uppercase;
+  margin-bottom:1.25rem;
+}
+.eyebrow::before { content:''; width:24px; height:1px; background:var(--accent); }
+
+.section-heading {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(32px,4.5vw,52px);
+  letter-spacing:-0.01em; color:var(--fg);
+  line-height:1.05; margin-bottom:1.25rem;
+}
+.section-sub {
+  font-size:16px; color:var(--fg-2); font-weight:400;
+  max-width:520px; line-height:1.75; margin-bottom:4rem;
+}
+
+/* ── CERTIFICATIONS STRIP ── */
+#certs { background:var(--bg-2); border-top:0.5px solid var(--border); border-bottom:0.5px solid var(--border); }
+.certs-inner { max-width:1200px; margin:0 auto; padding:3.5rem 3rem; }
+.certs-label {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--fg-3); letter-spacing:0.14em; text-transform:uppercase;
+  margin-bottom:1.75rem;
+}
+.certs-row { display:flex; flex-wrap:wrap; gap:0.75rem; }
+.cert-badge {
+  display:inline-flex; align-items:center; gap:0.6rem;
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--fg-2); background:var(--bg-3);
+  border:0.5px solid var(--border);
+  padding:0.5rem 1rem; border-radius:6px;
+  letter-spacing:0.04em; transition:all 0.2s;
+}
+.cert-badge:hover { border-color:var(--border-accent); color:var(--accent-2); background:var(--accent-glow-2); }
+.cert-badge .icon { font-size:14px; }
+.cert-badge.active { border-color:var(--border-accent); color:var(--accent-2); background:var(--accent-glow-2); }
+
+/* ── STACK ── */
+.stack-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1px; border:0.5px solid var(--border); border-radius:10px; overflow:hidden;
+}
+.stack-group { background:var(--bg-2); padding:2rem; }
+.stack-group-label {
+  font-family:'JetBrains Mono',monospace; font-size:9px;
+  color:var(--accent); letter-spacing:0.16em; text-transform:uppercase;
+  margin-bottom:1.25rem;
+}
+.stack-items { display:flex; flex-direction:column; gap:0.6rem; }
+.stack-item {
+  display:flex; align-items:center; gap:0.6rem;
+  font-size:13px; color:var(--fg-2);
+}
+.stack-item::before { content:''; width:4px; height:4px; background:var(--accent); border-radius:50%; flex-shrink:0; }
+.stack-item.core { color:var(--fg); font-weight:500; }
+.stack-item.core::before { background:var(--teal); box-shadow:0 0 6px var(--teal); }
+
+/* ── PROJECTS ── */
+.projects-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1.5px; border:0.5px solid var(--border);
+  border-radius:12px; overflow:hidden;
+}
+.project-card {
+  background:var(--bg-2); padding:3rem;
+  display:flex; flex-direction:column; gap:1.5rem;
+  text-decoration:none; color:inherit;
+  transition:background 0.3s; position:relative; overflow:hidden;
+}
+.project-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), var(--teal));
+  transform:scaleX(0); transform-origin:left;
+  transition:transform 0.4s ease;
+}
+.project-card:hover { background:var(--bg-3); }
+.project-card:hover::before { transform:scaleX(1); }
+
+.project-card.featured {
+  grid-column:1/-1;
+  background: linear-gradient(135deg, var(--bg-3) 0%, var(--bg-2) 100%);
+  border-bottom:0.5px solid var(--border);
+}
+.project-card.featured::before {
+  background:linear-gradient(90deg, var(--accent), var(--accent-3), var(--teal));
+}
+
+.project-num {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--fg-4); letter-spacing:0.1em;
+}
+.project-tags { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.ptag {
+  font-size:10px; font-family:'JetBrains Mono',monospace;
+  letter-spacing:0.06em; color:var(--accent-2);
+  background:var(--accent-glow-2);
+  border:0.5px solid var(--border-accent);
+  padding:0.2rem 0.55rem; border-radius:3px;
+}
+.ptag.teal { color:var(--teal); background:var(--teal-glow); border-color:rgba(0,212,170,0.2); }
+
+.project-title {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:clamp(20px,2.5vw,28px);
+  color:var(--fg); line-height:1.15; letter-spacing:-0.01em;
+}
+.project-card.featured .project-title { font-size:clamp(24px,3vw,36px); }
+
+.project-desc { font-size:14px; color:var(--fg-2); line-height:1.75; flex:1; }
+
+.project-metrics {
+  display:flex; gap:2rem; flex-wrap:wrap;
+  padding:1.25rem; background:rgba(255,255,255,0.025);
+  border-radius:6px; border:0.5px solid var(--border);
+}
+.pm { display:flex; flex-direction:column; gap:2px; }
+.pm-val {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:20px; color:var(--accent-2); line-height:1;
+}
+.pm-val.teal { color:var(--teal); }
+.pm-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--fg-3); letter-spacing:0.1em; text-transform:uppercase; }
+
+.project-findings { display:flex; flex-direction:column; gap:0.5rem; }
+.finding {
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--fg-2); line-height:1.6;
+  padding:0.4rem 0; border-bottom:0.5px solid var(--border);
+  display:flex; gap:0.6rem;
+}
+.finding::before { content:'→'; color:var(--accent); flex-shrink:0; }
+.finding:last-child { border-bottom:none; }
+
+.project-link {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--accent); letter-spacing:0.08em;
+  text-decoration:none; margin-top:auto; padding-top:1rem;
+  border-top:0.5px solid var(--border);
+  transition:gap 0.2s, color 0.2s;
+}
+.project-link:hover { gap:0.9rem; color:var(--accent-2); }
+.project-link::after { content:'↗'; }
+
+/* Fabric project special styling */
+.project-card.fabric-card {
+  background: linear-gradient(135deg, rgba(124,106,247,0.08) 0%, var(--bg-2) 60%);
+}
+
+/* Architecture diagram inside card */
+.arch-diagram {
+  display:grid; grid-template-columns:1fr auto 1fr auto 1fr;
+  align-items:center; gap:0.5rem;
+  padding:1.5rem; background:rgba(0,0,0,0.3);
+  border-radius:8px; border:0.5px solid var(--border);
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+}
+.arch-node {
+  background:var(--bg-3); border:0.5px solid var(--border-accent);
+  border-radius:6px; padding:0.75rem 1rem; text-align:center;
+  color:var(--accent-2); line-height:1.4;
+}
+.arch-node.teal { border-color:rgba(0,212,170,0.3); color:var(--teal); }
+.arch-arrow { color:var(--fg-4); font-size:16px; text-align:center; }
+
+/* ── SERVICES ── */
+.services-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; border:0.5px solid var(--border);
+  border-radius:12px; overflow:hidden;
+}
+.service-card {
+  background:var(--bg-2); padding:2.5rem 2rem;
+  display:flex; flex-direction:column; gap:1rem;
+  transition:background 0.2s; position:relative;
+}
+.service-card:hover { background:var(--bg-3); }
+.service-num {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--fg-4); letter-spacing:0.1em;
+}
+.service-icon-wrap {
+  width:44px; height:44px;
+  background:var(--accent-glow);
+  border:0.5px solid var(--border-accent);
+  border-radius:10px; display:flex; align-items:center;
+  justify-content:center; font-size:20px;
+}
+.service-name {
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:16px; color:var(--fg); line-height:1.2;
+}
+.service-desc { font-size:13px; color:var(--fg-2); line-height:1.7; flex:1; }
+.service-tags { display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:auto; }
+.stag {
+  font-size:9px; font-family:'JetBrains Mono',monospace;
+  color:var(--fg-3); background:var(--bg-4);
+  border:0.5px solid var(--border);
+  padding:0.2rem 0.5rem; border-radius:3px; letter-spacing:0.06em;
+}
+
+/* ── ABOUT ── */
+.about-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:5rem; align-items:start; }
+.about-body { display:flex; flex-direction:column; gap:1.5rem; }
+.about-p { font-size:16px; color:var(--fg-2); line-height:1.85; }
+.about-p strong { color:var(--fg); font-weight:600; }
+.about-pull {
+  border-left:2px solid var(--accent);
+  padding:1rem 1.5rem;
+  background:var(--accent-glow-2);
+  border-radius:0 6px 6px 0;
+  font-size:15px; font-style:italic;
+  color:var(--fg-2); line-height:1.7;
+}
+
+.skill-bars { display:flex; flex-direction:column; gap:1.25rem; }
+.skill-row { display:flex; flex-direction:column; gap:0.5rem; }
+.skill-header { display:flex; justify-content:space-between; }
+.skill-name { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg-2); letter-spacing:0.05em; }
+.skill-pct { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--fg-3); }
+.skill-track { height:2px; background:var(--bg-4); border-radius:2px; overflow:hidden; }
+.skill-fill {
+  height:100%; border-radius:2px;
+  background:linear-gradient(90deg, var(--accent), var(--accent-3));
+  transform:scaleX(0); transform-origin:left;
+  animation:fillBar 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes fillBar { to{transform:scaleX(1)} }
+
+/* ── CTA SECTION ── */
+#contact {
+  text-align:center; padding:8rem 3rem;
+  position:relative; z-index:1; overflow:hidden;
+}
+.contact-glow {
+  position:absolute; width:800px; height:400px;
+  background:radial-gradient(ellipse, rgba(124,106,247,0.12), transparent 70%);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.contact-inner { max-width:640px; margin:0 auto; position:relative; }
+.contact-heading {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(44px,6vw,80px);
+  letter-spacing:-0.02em; line-height:0.95;
+  color:var(--fg); margin-bottom:1.5rem;
+}
+.contact-heading .grad {
+  background:linear-gradient(135deg, var(--accent-2), var(--teal));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.contact-sub { font-size:17px; color:var(--fg-2); line-height:1.75; margin-bottom:3rem; }
+.contact-links { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+
+/* ── FOOTER ── */
+footer {
+  border-top:0.5px solid var(--border);
+  padding:2rem 3rem; display:flex;
+  justify-content:space-between; align-items:center;
+  position:relative; z-index:1;
+}
+.footer-left { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--fg-3); letter-spacing:0.08em; }
+.footer-right { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--fg-3); }
+.footer-right span { color:var(--accent); }
+
+/* ── SCROLL REVEAL ── */
+.reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links li:not(:last-child) { display:none; }
+  .section, .section-full { padding-left:1.5rem; padding-right:1.5rem; }
+  #hero { padding-left:1.5rem; padding-right:1.5rem; }
+  .hero-metrics { grid-template-columns:repeat(2,1fr); }
+  .projects-layout { grid-template-columns:1fr; }
+  .project-card.featured { grid-column:auto; }
+  .services-grid { grid-template-columns:1fr; }
+  .about-grid { grid-template-columns:1fr; gap:3rem; }
+  .arch-diagram { grid-template-columns:1fr; }
+  .arch-arrow { transform:rotate(90deg); }
+  footer { flex-direction:column; gap:0.5rem; text-align:center; }
+  body { cursor:auto; }
+  #cursor, #cursor-ring { display:none; }
+}
 </style>
 </head>
 <body>
 
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- AMBIENT -->
+<div class="ambient">
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+</div>
+
 <!-- NAV -->
 <nav>
-  <a href="#hero" class="nav-logo">GK.analytics</a>
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    GK.fabric
+  </a>
   <ul class="nav-links">
     <li><a href="#projects">Projects</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#contact" class="nav-cta">Work with me</a></li>
+    <li><span class="nav-badge">DP-600 Certified</span></li>
+    <li><a href="#contact" style="color:var(--accent-2); font-weight:600;">Hire me</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-accent-blob"></div>
   <div class="hero-inner">
-    <div class="hero-eyebrow fade-up">
-      <div class="hero-eyebrow-line"></div>
-      <span>Shopify Data Analyst · Nairobi, Kenya</span>
+    <div class="hero-kicker reveal">
+      <div class="hero-kicker-dot"></div>
+      Available for Fabric engagements · Nairobi, Kenya
     </div>
-    <h1 class="hero-name fade-up" style="transition-delay:0.1s">
-      GILBERT<br><span class="accent">KIPTOO</span>
+    <h1 class="hero-name reveal" style="transition-delay:0.08s">
+      GILBERT
+      <span class="line-2">KIPTOO</span>
     </h1>
-    <p class="hero-title fade-up" style="transition-delay:0.18s">AI-Augmented Analytics</p>
-    <p class="hero-description fade-up" style="transition-delay:0.26s">
-      I help Shopify merchants build <strong>clarity from their data.</strong> Using SQL, BigQuery, Power BI, Python, and AI tools, I deliver profitability analysis, customer insights, and <strong>automated daily reporting systems</strong> that replace manual spreadsheets for good.
+    <p class="hero-role reveal" style="transition-delay:0.16s">
+      Microsoft Fabric Analytics Engineer
     </p>
-    <div class="hero-ctas fade-up" style="transition-delay:0.34s">
-      <a href="#projects" class="btn-primary">View my projects</a>
-      <a href="#contact" class="btn-secondary">Let's talk</a>
+    <p class="hero-desc reveal" style="transition-delay:0.22s">
+      I design and implement <strong>end-to-end analytics solutions on Microsoft Fabric</strong> — from raw ingestion through medallion lakehouse architecture to governed semantic models and self-service Power BI reports. DP-600 certified. DP-700 in progress.
+    </p>
+    <div class="hero-ctas reveal" style="transition-delay:0.3s">
+      <a href="#projects" class="btn-primary">View portfolio</a>
+      <a href="https://linkedin.com/in/gilbertkiptoo" target="_blank" class="btn-outline">LinkedIn</a>
+      <a href="mailto:lelongilbert7@gmail.com" class="btn-outline">Get in touch</a>
     </div>
-    <div class="hero-stats fade-up" style="transition-delay:0.42s">
-      <div>
-        <div class="hero-stat-value">2</div>
-        <div class="hero-stat-label">End-to-end projects</div>
+    <div class="hero-metrics reveal" style="transition-delay:0.38s">
+      <div class="metric">
+        <div class="metric-val">DP-600</div>
+        <div class="metric-label">Fabric Certified</div>
       </div>
-      <div>
-        <div class="hero-stat-value">BigQuery</div>
-        <div class="hero-stat-label">Cloud warehouse</div>
+      <div class="metric">
+        <div class="metric-val teal">3</div>
+        <div class="metric-label">Portfolio Projects</div>
       </div>
-      <div>
-        <div class="hero-stat-value">AI+</div>
-        <div class="hero-stat-label">Augmented delivery</div>
+      <div class="metric">
+        <div class="metric-val amber">574K+</div>
+        <div class="metric-label">Events Streamed</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">E2E</div>
+        <div class="metric-label">Fabric Stack</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- STACK STRIP -->
-<div id="stack">
-  <p class="stack-label">Tech stack</p>
-  <div class="stack-pills">
-    <span class="pill highlight">BigQuery</span>
-    <span class="pill highlight">SQL</span>
-    <span class="pill highlight">Power BI</span>
-    <span class="pill">DAX</span>
-    <span class="pill">Python</span>
-    <span class="pill">pandas</span>
-    <span class="pill">ETL Pipelines</span>
-    <span class="pill">Google Cloud</span>
-    <span class="pill">GitHub</span>
-    <span class="pill">Claude AI</span>
-    <span class="pill">Shopify Data</span>
-    <span class="pill">Data Storytelling</span>
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <!-- first set -->
+    <span class="marquee-item"><span>Microsoft Fabric</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>OneLake</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Lakehouse Architecture</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Direct Lake</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Medallion Architecture</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>KQL / Eventhouse</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>PySpark</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Data Factory Pipelines</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Dataflow Gen2</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>DAX / Power BI</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Row-Level Security</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Delta Lake</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>BigQuery</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>SQL</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Python / pandas</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Deployment Pipelines</span></span><span class="marquee-item marquee-sep">·</span>
+    <!-- duplicate -->
+    <span class="marquee-item"><span>Microsoft Fabric</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>OneLake</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Lakehouse Architecture</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Direct Lake</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Medallion Architecture</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>KQL / Eventhouse</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>PySpark</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Data Factory Pipelines</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Dataflow Gen2</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>DAX / Power BI</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Row-Level Security</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Delta Lake</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>BigQuery</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>SQL</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Python / pandas</span></span><span class="marquee-item marquee-sep">·</span>
+    <span class="marquee-item"><span>Deployment Pipelines</span></span><span class="marquee-item marquee-sep">·</span>
+  </div>
+</div>
+
+<!-- CERTIFICATIONS -->
+<div id="certs">
+  <div class="certs-inner">
+    <p class="certs-label">Certifications & credentials</p>
+    <div class="certs-row">
+      <span class="cert-badge active"><span class="icon">🏆</span> DP-600 — Fabric Analytics Engineer Associate</span>
+      <span class="cert-badge active"><span class="icon">📊</span> PL-300 — Power BI Data Analyst</span>
+      <span class="cert-badge"><span class="icon">⚡</span> DP-700 — Fabric Data Engineer (In Progress)</span>
+      <span class="cert-badge"><span class="icon">☁️</span> AWS AI Practitioner</span>
+      <span class="cert-badge"><span class="icon">🎓</span> MSc Finance — Kabarak University</span>
+      <span class="cert-badge"><span class="icon">🏦</span> BCom Banking & Finance — Egerton University</span>
+    </div>
+  </div>
+</div>
+
+<!-- STACK -->
+<hr class="section-divider">
+<div class="section">
+  <div class="eyebrow reveal">Tech Stack</div>
+  <h2 class="section-heading reveal">Built on the full<br>Fabric spectrum</h2>
+  <p class="section-sub reveal">Every layer of the modern analytics stack — from raw ingestion to governed self-service BI.</p>
+
+  <div class="stack-grid reveal">
+    <div class="stack-group">
+      <div class="stack-group-label">Fabric Core</div>
+      <div class="stack-items">
+        <span class="stack-item core">OneLake / Lakehouse</span>
+        <span class="stack-item core">Direct Lake Mode</span>
+        <span class="stack-item core">Medallion Architecture</span>
+        <span class="stack-item">Warehouse (T-SQL)</span>
+        <span class="stack-item">Deployment Pipelines</span>
+        <span class="stack-item">Fabric Capacities</span>
+      </div>
+    </div>
+    <div class="stack-group">
+      <div class="stack-group-label">Ingestion & Transform</div>
+      <div class="stack-items">
+        <span class="stack-item core">Data Factory Pipelines</span>
+        <span class="stack-item core">Dataflow Gen2</span>
+        <span class="stack-item core">Spark Notebooks</span>
+        <span class="stack-item">On-Premises Gateway</span>
+        <span class="stack-item">Eventstream / KQL</span>
+        <span class="stack-item">Delta / Parquet</span>
+      </div>
+    </div>
+    <div class="stack-group">
+      <div class="stack-group-label">Semantic & BI</div>
+      <div class="stack-items">
+        <span class="stack-item core">Power BI Reports</span>
+        <span class="stack-item core">DAX (Advanced)</span>
+        <span class="stack-item core">Semantic Model Design</span>
+        <span class="stack-item">Row-Level Security</span>
+        <span class="stack-item">Star Schema</span>
+        <span class="stack-item">XMLA Endpoint</span>
+      </div>
+    </div>
+    <div class="stack-group">
+      <div class="stack-group-label">Broader Stack</div>
+      <div class="stack-items">
+        <span class="stack-item core">SQL / BigQuery</span>
+        <span class="stack-item">Python / pandas</span>
+        <span class="stack-item">n8n Automation</span>
+        <span class="stack-item">Claude API</span>
+        <span class="stack-item">Railway / Trigger.dev</span>
+        <span class="stack-item">GitHub</span>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- PROJECTS -->
-<section id="projects">
-  <div class="section-eyebrow"><span>Portfolio</span></div>
-  <h2 class="section-title">Selected Work</h2>
-  <p class="section-subtitle">End-to-end projects built on realistic Shopify-style datasets — from messy raw CSV files to business decisions. Third project dropping this weekend.</p>
+<hr class="section-divider">
+<div class="section">
+  <div class="eyebrow reveal">Portfolio</div>
+  <h2 class="section-heading reveal">End-to-end projects.<br>Real decisions.</h2>
+  <p class="section-sub reveal">Not toy datasets. Not tutorials. Production-grade analytics solutions built from scratch.</p>
 
-  <div class="projects-grid">
+  <div class="projects-layout reveal">
 
-    <!-- PROJECT 1 -->
-    <a class="project-card fade-up" href="https://github.com/lelongilbert7-gif/Shopify-Northstar-trail-supply-analytics" target="_blank" rel="noopener">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <span class="project-number">01</span>
+    <!-- FABRIC PROJECT — FEATURED -->
+    <a class="project-card featured fabric-card" href="https://github.com/lelongilbert7-gif/Retail-intelligence-fabric" target="_blank" rel="noopener">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <span class="project-num">01 — FEATURED</span>
         <div class="project-tags">
-          <span class="tag">BigQuery</span>
-          <span class="tag">SQL</span>
-          <span class="tag">9-Table Dataset</span>
+          <span class="ptag teal">Microsoft Fabric</span>
+          <span class="ptag teal">KQL</span>
+          <span class="ptag">Direct Lake</span>
+          <span class="ptag">Medallion</span>
+          <span class="ptag">Real-Time</span>
+          <span class="ptag">DP-600</span>
         </div>
       </div>
-      <h3 class="project-title">Northstar Trail Supply Analytics</h3>
-      <p class="project-desc">
-        End-to-end analysis of a realistic messy Shopify dataset spanning 9 raw CSV tables — customers, orders, refunds, inventory, marketing, FX rates, and more. Built to mirror the kind of data chaos a real ecommerce analyst inherits on day one.
-      </p>
-      <div class="project-findings">
-        <span class="finding-item">Gross revenue $286K · net $271K · 5.3% refund rate identified</span>
-        <span class="finding-item">Top 2 SKUs (Trail Brew Blend + High Ridge Espresso) drive 36%+ of revenue — dangerous SKU concentration flagged</span>
-        <span class="finding-item">Revenue grew steadily through 2024, peaked in Q4, stabilized at a higher 2025 baseline — seasonality confirmed</span>
-        <span class="finding-item">Full cleaning pipeline across 9 tables: timestamps, nulls, type mismatches, boolean fields, guest checkout gaps</span>
+      <h3 class="project-title">Real-Time Retail Intelligence Hub</h3>
+      <p class="project-desc">End-to-end Microsoft Fabric solution combining incremental batch migration from on-premises SQL Server with live IoT event streaming — two fully independent data tracks converging in a governed semantic model and executive Power BI report.</p>
+
+      <div class="arch-diagram">
+        <div class="arch-node">SQL Server<br>(AdventureWorks)<br>On-Premises</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">Bronze Parquet<br>→ Gold Delta<br>Medallion LH</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node teal">Direct Lake<br>Semantic Model<br>Power BI Report</div>
       </div>
-      <span class="project-link">View on GitHub</span>
+
+      <div class="project-metrics">
+        <div class="pm"><div class="pm-val">121K</div><div class="pm-label">Rows migrated</div></div>
+        <div class="pm"><div class="pm-val teal">574K+</div><div class="pm-label">Events streamed</div></div>
+        <div class="pm"><div class="pm-val">4</div><div class="pm-label">DAX measures</div></div>
+        <div class="pm"><div class="pm-val teal">3</div><div class="pm-label">Live KQL tiles</div></div>
+      </div>
+
+      <div class="project-findings">
+        <span class="finding">Watermark-based incremental pipeline on ModifiedDate — production-ready pattern for large OLTP sources</span>
+        <span class="finding">Custom Spark environment resolved SA North HTTP 430 throttling — architecture adapts to real infrastructure constraints</span>
+        <span class="finding">Real-time bicycle IoT stream → Eventhouse → KQL dashboard with availability trend, top stations, and anomaly detection</span>
+        <span class="finding">Direct Lake semantic model with RLS role (RegionManager, TerritoryID = 6) — enterprise governance pattern</span>
+      </div>
+      <span class="project-link">View on GitHub + Loom walkthrough</span>
     </a>
 
     <!-- PROJECT 2 -->
-    <a class="project-card fade-up" href="https://github.com/lelongilbert7-gif/Bluepeak-Commerce-Shopify-Analytics" target="_blank" rel="noopener" style="transition-delay:0.1s">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <span class="project-number">02</span>
+    <a class="project-card" href="https://github.com/lelongilbert7-gif/Bluepeak-Commerce-Shopify-Analytics" target="_blank" rel="noopener">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem">
+        <span class="project-num">02</span>
         <div class="project-tags">
-          <span class="tag">BigQuery</span>
-          <span class="tag">SQL</span>
-          <span class="tag">Power BI</span>
-          <span class="tag">Profitability</span>
+          <span class="ptag">BigQuery</span>
+          <span class="ptag">SQL</span>
+          <span class="ptag">Power BI</span>
+          <span class="ptag">DAX</span>
         </div>
       </div>
       <h3 class="project-title">BluePeak Commerce: Profit Leakage Analysis</h3>
-      <p class="project-desc">
-        Full-stack analytics project — BigQuery warehouse, staged data model, profitability fact table, and Power BI dashboard. Built to answer the hardest question in ecommerce: not "what is our revenue?" but "where is the money actually going?"
-      </p>
+      <p class="project-desc">Full-stack analytics — BigQuery warehouse, staged data model, profitability fact table, and Power BI dashboard answering the hardest ecommerce question: not "what is our revenue?" but "where is the money going?"</p>
       <div class="project-findings">
-        <span class="finding-item">$94.2K revenue · $38.6K contribution profit · 40.9% margin — but margin under pressure</span>
-        <span class="finding-item">5 products with refund rates above 10% identified; SUMMER20 discount delivering only 25.8% margin vs BUNDLE15 at 38.3%</span>
-        <span class="finding-item">Top 20% of customers generated $19.9K — more than half of total profit; repeat buyers with 5–7 orders dominate</span>
-        <span class="finding-item">Google Ads (43.5%) and Email (43.2%) outperform Affiliate (30.3%) — reallocation recommended</span>
+        <span class="finding">$94.2K revenue · 40.9% margin — 5 products with refund rates above 10% identified</span>
+        <span class="finding">SUMMER20 delivering 25.8% margin vs BUNDLE15 at 38.3% — discount reallocation recommended</span>
+        <span class="finding">Google Ads (43.5%) and Email (43.2%) vs Affiliate (30.3%) — channel mix gap quantified</span>
       </div>
       <span class="project-link">View on GitHub</span>
     </a>
 
-    <!-- PROJECT 3 — COMING SUNDAY -->
-    <div class="project-card fade-up" style="transition-delay:0.2s; opacity:0.6; cursor:default; position:relative; overflow:hidden;">
-      <div style="position:absolute; top:1.25rem; right:1.25rem; font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); border:0.5px solid var(--border-accent); padding:0.2rem 0.6rem; border-radius:3px; letter-spacing:0.08em;">DROPPING SUNDAY</div>
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <span class="project-number">03</span>
+    <!-- PROJECT 3 -->
+    <a class="project-card" href="https://github.com/lelongilbert7-gif/Shopify-Northstar-trail-supply-analytics" target="_blank" rel="noopener">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem">
+        <span class="project-num">03</span>
         <div class="project-tags">
-          <span class="tag">BigQuery</span>
-          <span class="tag">Power BI</span>
-          <span class="tag">Live Pipeline</span>
+          <span class="ptag">BigQuery</span>
+          <span class="ptag">SQL</span>
+          <span class="ptag">9-Table Dataset</span>
         </div>
       </div>
-      <h3 class="project-title" style="color:var(--text-muted);">Live Shopify Analytics Pipeline</h3>
-      <p class="project-desc">
-        A fully automated end-to-end pipeline — raw Shopify data flowing into BigQuery, cleaned and modeled, then surfaced in a live Power BI dashboard. The working prototype of the system I build for clients who want to wake up to yesterday's numbers automatically.
-      </p>
+      <h3 class="project-title">Northstar Trail Supply Analytics</h3>
+      <p class="project-desc">End-to-end analysis of a 9-table Shopify dataset — built to mirror the data chaos a real analyst inherits on day one. Full cleaning pipeline, revenue/margin/refund analysis, SKU concentration risk assessment.</p>
       <div class="project-findings">
-        <span class="finding-item">BigQuery → Power BI live connection with scheduled refresh</span>
-        <span class="finding-item">Automated daily reporting — no manual exports, no spreadsheets</span>
-        <span class="finding-item">Executive dashboard: revenue, margins, refunds, top products</span>
+        <span class="finding">$286K gross revenue · 5.3% refund rate — full margin waterfall built</span>
+        <span class="finding">Top 2 SKUs drive 36%+ of revenue — dangerous SKU concentration risk flagged</span>
+        <span class="finding">Q4 seasonality confirmed · 2025 baseline elevated vs prior year</span>
       </div>
-      <span style="display:inline-flex; align-items:center; gap:0.5rem; font-size:12px; font-family:'DM Mono',monospace; color:var(--text-dim); padding-top:0.5rem; border-top:0.5px solid var(--border); margin-top:auto;">In progress — check back Sunday</span>
-    </div>
+      <span class="project-link">View on GitHub</span>
+    </a>
 
   </div>
-</section>
+</div>
 
 <!-- SERVICES -->
-<section id="services">
-  <div class="section-eyebrow"><span>What I do</span></div>
-  <h2 class="section-title">Services</h2>
-  <p class="section-subtitle">Built specifically for Shopify merchants who are ready to stop guessing and start deciding with data.</p>
+<hr class="section-divider">
+<div class="section">
+  <div class="eyebrow reveal">What I do</div>
+  <h2 class="section-heading reveal">Services</h2>
+  <p class="section-sub reveal">From legacy Power BI Premium migrations to greenfield Fabric builds — I own the full solution lifecycle.</p>
 
-  <div class="services-grid">
-    <div class="service-card fade-up">
-      <span class="service-icon">⬡</span>
-      <div class="service-name">Shopify Data Extraction & ETL</div>
-      <p class="service-desc">Clean, structure, and load your raw Shopify data into BigQuery. One-time setup or recurring pipeline — your data becomes a reliable asset.</p>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-icon-wrap">🏗️</div>
+      <div class="service-name">Fabric Migration & Architecture</div>
+      <p class="service-desc">End-to-end migration from legacy Power BI Premium, Azure Synapse, or on-premise warehouses to Microsoft Fabric. Workspace planning, OneLake design, medallion layering, capacity governance.</p>
+      <div class="service-tags">
+        <span class="stag">OneLake</span><span class="stag">Lakehouse</span><span class="stag">Medallion</span><span class="stag">DP-600</span>
+      </div>
     </div>
-    <div class="service-card fade-up" style="transition-delay:0.08s">
-      <span class="service-icon">◈</span>
-      <div class="service-name">Profitability & Revenue Analysis</div>
-      <p class="service-desc">Deep SQL analysis to identify your most profitable products, channels, and customer segments. Delivered with clear, actionable recommendations.</p>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-icon-wrap">⚡</div>
+      <div class="service-name">Data Pipelines & Ingestion</div>
+      <p class="service-desc">Batch and streaming ingestion using Data Factory pipelines, Dataflow Gen2, Spark notebooks, and KQL Eventhouses. Incremental load patterns, watermarking, Bronze→Silver→Gold transformation.</p>
+      <div class="service-tags">
+        <span class="stag">Data Factory</span><span class="stag">Spark</span><span class="stag">KQL</span><span class="stag">Delta Lake</span>
+      </div>
     </div>
-    <div class="service-card fade-up" style="transition-delay:0.16s">
-      <span class="service-icon">◉</span>
-      <div class="service-name">Customer Insights & Segmentation</div>
-      <p class="service-desc">RFM analysis, cohort tracking, and retention breakdowns. Know exactly who your best customers are and how to keep them.</p>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-icon-wrap">🔷</div>
+      <div class="service-name">Semantic Model Engineering</div>
+      <p class="service-desc">Star schema design, Direct Lake vs Import mode decisions, advanced DAX (time intelligence, RANKX, semi-additive measures), row-level security, deployment pipelines, XMLA endpoint access.</p>
+      <div class="service-tags">
+        <span class="stag">Direct Lake</span><span class="stag">DAX</span><span class="stag">RLS</span><span class="stag">Star Schema</span>
+      </div>
     </div>
-    <div class="service-card fade-up" style="transition-delay:0.24s">
-      <span class="service-icon">⬕</span>
-      <div class="service-name">Power BI Dashboards</div>
-      <p class="service-desc">Interactive dashboards connected to BigQuery — built for Shopify operators who want live answers, not weekly spreadsheets.</p>
+    <div class="service-card">
+      <div class="service-num">04</div>
+      <div class="service-icon-wrap">📊</div>
+      <div class="service-name">Power BI Report Development</div>
+      <p class="service-desc">Executive dashboards, operational reports, and paginated reports connected to Fabric semantic models. Performance tuning, mobile layout, and automated distribution pipelines.</p>
+      <div class="service-tags">
+        <span class="stag">Power BI</span><span class="stag">DAX</span><span class="stag">Paginated</span><span class="stag">PL-300</span>
+      </div>
     </div>
-    <div class="service-card fade-up" style="transition-delay:0.32s">
-      <span class="service-icon">◎</span>
-      <div class="service-name">Automated Daily Reporting</div>
-      <p class="service-desc">Pipelines that run themselves. Wake up to yesterday's store performance — revenue, margins, best sellers — already in your inbox.</p>
+    <div class="service-card">
+      <div class="service-num">05</div>
+      <div class="service-icon-wrap">🤖</div>
+      <div class="service-name">AI-Augmented Analytics Pipelines</div>
+      <p class="service-desc">Layer natural-language narrative generation on structured analytics outputs using Claude API. Automated daily intelligence reports delivered to your inbox — no spreadsheets, no manual work.</p>
+      <div class="service-tags">
+        <span class="stag">Claude API</span><span class="stag">n8n</span><span class="stag">Trigger.dev</span><span class="stag">Railway</span>
+      </div>
     </div>
-    <div class="service-card fade-up" style="transition-delay:0.40s">
-      <span class="service-icon">⬡</span>
-      <div class="service-name">One-time Data Audits</div>
-      <p class="service-desc">Not sure what your data is telling you? A focused audit of your Shopify reports to find the gaps, risks, and opportunities you're missing.</p>
+    <div class="service-card">
+      <div class="service-num">06</div>
+      <div class="service-icon-wrap">🛒</div>
+      <div class="service-name">eCommerce Analytics</div>
+      <p class="service-desc">Shopify-native analytics: margin analysis, customer profitability, discount impact, refund behaviour, inventory risk, and stockout forecasting. BigQuery warehousing + Power BI delivery.</p>
+      <div class="service-tags">
+        <span class="stag">Shopify</span><span class="stag">BigQuery</span><span class="stag">SQL</span><span class="stag">Python</span>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- ABOUT -->
-<section id="about">
-  <div class="section-eyebrow"><span>About</span></div>
-  <h2 class="section-title">The Analyst</h2>
+<hr class="section-divider">
+<div class="section">
+  <div class="eyebrow reveal">About</div>
+  <h2 class="section-heading reveal">The engineer<br>behind the data</h2>
   <div class="about-grid">
-    <div class="about-body fade-up">
-      <p>I'm Gilbert Kiptoo, a <strong>data analyst based in Nairobi, Kenya</strong> specialising in Shopify merchant analytics. I combine deep SQL and BigQuery expertise with Power BI dashboards and Python automation to deliver the kind of data infrastructure that used to require a whole team.</p>
-      <p>My edge is being <strong>AI-augmented</strong> — I use tools like Claude to move faster, go deeper, and deliver more polished output than a traditional analyst working alone. This keeps my cost to clients low and my quality high.</p>
-      <p>My long-term goal is building fully automated analytics pipelines for Shopify brands: live data flowing from your store to BigQuery to a dashboard to your inbox — daily, automatically, without you touching a spreadsheet.</p>
-      <blockquote class="about-quote">
-        "My white whale is building live data pipelines that give Shopify brands the analytics of a funded startup — at the cost of a freelancer."
+    <div class="about-body reveal">
+      <p class="about-p">I'm <strong>Gilbert Kiptoo</strong>, a Microsoft Fabric Analytics Engineer based in <strong>Nairobi, Kenya</strong>. I hold the DP-600 (Fabric Analytics Engineer Associate) and PL-300 (Power BI Data Analyst) certifications, with DP-700 in active progress.</p>
+      <p class="about-p">My practice covers the full Fabric spectrum: <strong>OneLake and Lakehouse architecture</strong>, medallion layering, Direct Lake semantic models, advanced DAX, KQL-based real-time analytics, row-level security, deployment pipelines, and workspace governance. I can own a solution from storage design to production report delivery.</p>
+      <p class="about-p">My edge is being <strong>AI-augmented</strong> — I layer Claude API narrative generation on top of structured analytics pipelines, delivering intelligence reports that go beyond dashboards. I also bring a Finance background (BCom + CIFA + MSc) that lets me ask the right business questions before writing a single line of SQL.</p>
+      <blockquote class="about-pull">
+        "My focus is enterprise-grade Fabric deployments for data-intensive organizations across East Africa and remote-first global teams."
       </blockquote>
+      <p class="about-p">Open to: <strong>full-time Fabric specialist roles</strong>, freelance analytics engineering engagements, and BI modernization projects moving from legacy Power BI Premium to Fabric.</p>
     </div>
-    <div class="about-tools fade-up" style="transition-delay:0.15s">
-      <div class="tool-row">
-        <div class="tool-header">
-          <span class="tool-name">SQL / BigQuery</span>
-          <span class="tool-level">Advanced</span>
-        </div>
-        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:88%"></div></div>
+    <div class="skill-bars reveal" style="transition-delay:0.15s">
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">Microsoft Fabric</span><span class="skill-pct">Core</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:90%"></div></div>
       </div>
-      <div class="tool-row">
-        <div class="tool-header">
-          <span class="tool-name">Power BI / DAX</span>
-          <span class="tool-level">Intermediate–Advanced</span>
-        </div>
-        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:76%; animation-delay:0.15s"></div></div>
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">SQL / BigQuery</span><span class="skill-pct">Advanced</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:88%;animation-delay:0.1s"></div></div>
       </div>
-      <div class="tool-row">
-        <div class="tool-header">
-          <span class="tool-name">Python / pandas</span>
-          <span class="tool-level">Intermediate</span>
-        </div>
-        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:60%; animation-delay:0.3s"></div></div>
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">Power BI / DAX</span><span class="skill-pct">Advanced</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:85%;animation-delay:0.2s"></div></div>
       </div>
-      <div class="tool-row">
-        <div class="tool-header">
-          <span class="tool-name">Data Storytelling</span>
-          <span class="tool-level">Strong</span>
-        </div>
-        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:82%; animation-delay:0.45s"></div></div>
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">Data Factory / Pipelines</span><span class="skill-pct">Proficient</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:78%;animation-delay:0.3s"></div></div>
       </div>
-      <div class="tool-row">
-        <div class="tool-header">
-          <span class="tool-name">ETL / Pipeline design</span>
-          <span class="tool-level">Building</span>
-        </div>
-        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:50%; animation-delay:0.6s"></div></div>
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">KQL / Eventhouse</span><span class="skill-pct">Proficient</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:72%;animation-delay:0.4s"></div></div>
       </div>
-      <div class="tool-row">
-        <div class="tool-header">
-          <span class="tool-name">AI-augmented workflow</span>
-          <span class="tool-level">Core practice</span>
-        </div>
-        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:90%; animation-delay:0.75s"></div></div>
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">Python / pandas</span><span class="skill-pct">Intermediate</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:65%;animation-delay:0.5s"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-header"><span class="skill-name">AI-augmented pipelines</span><span class="skill-pct">Core practice</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:82%;animation-delay:0.6s"></div></div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- CONTACT -->
+<hr class="section-divider">
 <section id="contact">
+  <div class="contact-glow"></div>
   <div class="contact-inner">
-    <div class="section-eyebrow" style="justify-content:center; margin-bottom:1.5rem;"><span>Let's work together</span></div>
-    <h2 class="contact-title fade-up">
-      READY TO<br><span class="accent">MOVE FASTER</span><br>WITH YOUR DATA?
+    <div class="eyebrow reveal" style="justify-content:center">Let's build</div>
+    <h2 class="contact-heading reveal">
+      READY TO<br>
+      <span class="grad">MODERNIZE</span><br>
+      YOUR DATA?
     </h2>
-    <p class="contact-sub fade-up" style="transition-delay:0.1s">
-      If you're a Shopify merchant spending hours in spreadsheets — or not looking at your data at all — let's talk. I'll tell you exactly what I can build for you and what it would cost.
+    <p class="contact-sub reveal" style="transition-delay:0.1s">
+      Whether you're migrating from legacy Power BI Premium, building a Fabric lakehouse from scratch, or need a real-time KQL analytics layer — let's talk scope and timeline.
     </p>
-    <div class="contact-links fade-up" style="transition-delay:0.2s">
+    <div class="contact-links reveal" style="transition-delay:0.2s">
       <a href="mailto:lelongilbert7@gmail.com" class="btn-primary">Email me directly</a>
-      <a href="https://github.com/lelongilbert7-gif" target="_blank" class="btn-secondary">GitHub</a>
-      <a href="https://www.linkedin.com/in/gilbert-kiptoo-346ba1191/" target="_blank" class="btn-secondary">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/gilbertkiptoo/" target="_blank" class="btn-outline">LinkedIn</a>
+      <a href="https://github.com/lelongilbert7-gif" target="_blank" class="btn-outline">GitHub</a>
+      <a href="https://lelongilbert7-gif.github.io" target="_blank" class="btn-outline">Portfolio</a>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-copy">© 2026 Gilbert Kiptoo · Nairobi, Kenya</span>
-  <span class="footer-tag">Built for <span>Shopify merchants</span></span>
+  <span class="footer-left">© 2026 Gilbert Kiptoo · Nairobi, Kenya · DP-600 Certified</span>
+  <span class="footer-right">Built for <span>Microsoft Fabric</span> engagements</span>
 </footer>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cursor.style.width='18px'; cursor.style.height='18px';
+    ring.style.width='56px'; ring.style.height='56px';
+    ring.style.borderColor='rgba(124,106,247,0.8)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cursor.style.width='10px'; cursor.style.height='10px';
+    ring.style.width='36px'; ring.style.height='36px';
+    ring.style.borderColor='rgba(124,106,247,0.5)';
+  });
+});
 
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+// Scroll reveal
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); observer.unobserve(e.target); } });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 </script>
-
 </body>
 </html>
