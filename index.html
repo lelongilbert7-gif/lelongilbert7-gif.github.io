@@ -66,7 +66,6 @@ body {
   transform: translate(-50%,-50%);
   transition: transform 0.18s ease, width 0.3s, height 0.3s, border-color 0.3s;
 }
-body:hover #cursor { opacity:1; }
 
 /* ── GLOBAL GRAIN OVERLAY ── */
 body::after {
@@ -389,7 +388,6 @@ nav {
 .project-link:hover { gap:0.9rem; color:var(--accent-2); }
 .project-link::after { content:'↗'; }
 
-/* Fabric project special styling */
 .project-card.fabric-card {
   background: linear-gradient(135deg, rgba(124,106,247,0.08) 0%, var(--bg-2) 60%);
 }
@@ -588,7 +586,7 @@ footer {
         <div class="metric-label">Fabric Certified</div>
       </div>
       <div class="metric">
-        <div class="metric-val teal">3</div>
+        <div class="metric-val teal">4</div>
         <div class="metric-label">Portfolio Projects</div>
       </div>
       <div class="metric">
@@ -606,7 +604,6 @@ footer {
 <!-- MARQUEE -->
 <div class="marquee-strip">
   <div class="marquee-inner">
-    <!-- first set -->
     <span class="marquee-item"><span>Microsoft Fabric</span></span><span class="marquee-item marquee-sep">·</span>
     <span class="marquee-item"><span>OneLake</span></span><span class="marquee-item marquee-sep">·</span>
     <span class="marquee-item"><span>Lakehouse Architecture</span></span><span class="marquee-item marquee-sep">·</span>
@@ -623,7 +620,6 @@ footer {
     <span class="marquee-item"><span>SQL</span></span><span class="marquee-item marquee-sep">·</span>
     <span class="marquee-item"><span>Python / pandas</span></span><span class="marquee-item marquee-sep">·</span>
     <span class="marquee-item"><span>Deployment Pipelines</span></span><span class="marquee-item marquee-sep">·</span>
-    <!-- duplicate -->
     <span class="marquee-item"><span>Microsoft Fabric</span></span><span class="marquee-item marquee-sep">·</span>
     <span class="marquee-item"><span>OneLake</span></span><span class="marquee-item marquee-sep">·</span>
     <span class="marquee-item"><span>Lakehouse Architecture</span></span><span class="marquee-item marquee-sep">·</span>
@@ -715,57 +711,79 @@ footer {
 
 <!-- PROJECTS -->
 <hr class="section-divider">
-<div class="section">
+<div class="section" id="projects">
   <div class="eyebrow reveal">Portfolio</div>
   <h2 class="section-heading reveal">End-to-end projects.<br>Real decisions.</h2>
   <p class="section-sub reveal">Not toy datasets. Not tutorials. Production-grade analytics solutions built from scratch.</p>
 
   <div class="projects-layout reveal">
 
-    <!-- FABRIC PROJECT — FEATURED -->
-    <a class="project-card featured fabric-card" href="https://github.com/lelongilbert7-gif/Retail-intelligence-fabric" target="_blank" rel="noopener">
+    <!-- PROJECT 01 — AIRLINE LAKEHOUSE (FEATURED, LATEST) -->
+    <a class="project-card featured fabric-card" href="project2-airline-lakehouse.html" rel="noopener">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
-        <span class="project-num">01 — FEATURED</span>
+        <span class="project-num">01 — LATEST</span>
+        <div class="project-tags">
+          <span class="ptag teal">Microsoft Fabric</span>
+          <span class="ptag teal">PySpark</span>
+          <span class="ptag">Direct Lake</span>
+          <span class="ptag">Medallion</span>
+          <span class="ptag">Weather API</span>
+          <span class="ptag">DP-700</span>
+        </div>
+      </div>
+      <h3 class="project-title">Airline On-Time Performance Lakehouse</h3>
+      <p class="project-desc">An end-to-end medallion analytics platform on Microsoft Fabric ingesting three genuinely independent sources — US DOT flight records (538K rows), SQL database dimensions via Mirroring and OneLake Shortcuts, and Open-Meteo weather API — through a Bronze → Silver → Gold architecture into a Direct Lake semantic model with 7 DAX measures, a scheduled pipeline, Activator alerts, and a full Dev → Test → Prod deployment pipeline backed by GitHub.</p>
+
+      <div class="arch-diagram">
+        <div class="arch-node">BTS Flights + SQL DB<br>+ Open-Meteo API<br><small style="opacity:0.6">3 independent sources</small></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">Bronze → Silver → Gold<br>PySpark · Delta · V-Order<br><small style="opacity:0.6">229K aggregated rows</small></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node teal">Direct Lake Model<br>7 DAX Measures<br>+ Activator Alert</div>
+      </div>
+
+      <div class="project-metrics">
+        <div class="pm"><div class="pm-val">535K</div><div class="pm-label">Flights analysed</div></div>
+        <div class="pm"><div class="pm-val teal">+63%</div><div class="pm-label">Rainy day delay uplift</div></div>
+        <div class="pm"><div class="pm-val">7</div><div class="pm-label">DAX measures</div></div>
+        <div class="pm"><div class="pm-val teal">Dev→Prod</div><div class="pm-label">Deployed pipeline</div></div>
+      </div>
+
+      <div class="project-findings">
+        <span class="finding">Rainy days (>5mm precipitation) increase avg departure delays by 63% — from 13.8 to 22.5 min — quantified by independently joining BTS flight records with Open-Meteo weather data across 15 US airports</span>
+        <span class="finding">NK (Spirit) worst performer at 69.3% on-time; YX (Republic) best at 85.6% — carrier ranking confirmed across 535K real flight records</span>
+        <span class="finding">SQL database in Fabric auto-mirrors dimensions to OneLake — Mirroring + Shortcuts demonstrated without an external Azure subscription</span>
+        <span class="finding">Git (GitHub) integration + deployment pipeline Dev → Test → Prod with deployment rules — full ALM lifecycle proved</span>
+      </div>
+      <span class="project-link">View full project · project page + GitHub</span>
+    </a>
+
+    <!-- PROJECT 02 — REAL-TIME RETAIL -->
+    <a class="project-card" href="https://github.com/lelongilbert7-gif/Retail-intelligence-fabric" target="_blank" rel="noopener">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem">
+        <span class="project-num">02</span>
         <div class="project-tags">
           <span class="ptag teal">Microsoft Fabric</span>
           <span class="ptag teal">KQL</span>
-          <span class="ptag">Direct Lake</span>
-          <span class="ptag">Medallion</span>
           <span class="ptag">Real-Time</span>
           <span class="ptag">DP-600</span>
         </div>
       </div>
       <h3 class="project-title">Real-Time Retail Intelligence Hub</h3>
-      <p class="project-desc">End-to-end Microsoft Fabric solution combining incremental batch migration from on-premises SQL Server with live IoT event streaming — two fully independent data tracks converging in a governed semantic model and executive Power BI report.</p>
-
-      <div class="arch-diagram">
-        <div class="arch-node">SQL Server<br>(AdventureWorks)<br>On-Premises</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-node">Bronze Parquet<br>→ Gold Delta<br>Medallion LH</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-node teal">Direct Lake<br>Semantic Model<br>Power BI Report</div>
-      </div>
-
-      <div class="project-metrics">
-        <div class="pm"><div class="pm-val">121K</div><div class="pm-label">Rows migrated</div></div>
-        <div class="pm"><div class="pm-val teal">574K+</div><div class="pm-label">Events streamed</div></div>
-        <div class="pm"><div class="pm-val">4</div><div class="pm-label">DAX measures</div></div>
-        <div class="pm"><div class="pm-val teal">3</div><div class="pm-label">Live KQL tiles</div></div>
-      </div>
-
+      <p class="project-desc">End-to-end Fabric solution combining incremental batch migration from on-premises SQL Server with live IoT event streaming — two fully independent data tracks converging in a governed Direct Lake semantic model and executive Power BI report.</p>
       <div class="project-findings">
-        <span class="finding">Watermark-based incremental pipeline on ModifiedDate — production-ready pattern for large OLTP sources</span>
-        <span class="finding">Custom Spark environment resolved SA North HTTP 430 throttling — architecture adapts to real infrastructure constraints</span>
-        <span class="finding">Real-time bicycle IoT stream → Eventhouse → KQL dashboard with availability trend, top stations, and anomaly detection</span>
+        <span class="finding">121K rows migrated via watermark-based incremental pipeline on ModifiedDate — production pattern for large OLTP sources</span>
+        <span class="finding">574K+ events streamed through Eventhouse → KQL dashboard with availability trend and anomaly detection</span>
         <span class="finding">Direct Lake semantic model with RLS role (RegionManager, TerritoryID = 6) — enterprise governance pattern</span>
+        <span class="finding">Custom Spark environment resolved SA North HTTP 430 throttling — architecture adapts to real infrastructure constraints</span>
       </div>
-      <span class="project-link">View on GitHub + Loom walkthrough</span>
+      <span class="project-link">View on GitHub</span>
     </a>
 
-    <!-- PROJECT 2 -->
+    <!-- PROJECT 03 — BLUEPEAK COMMERCE -->
     <a class="project-card" href="https://github.com/lelongilbert7-gif/Bluepeak-Commerce-Shopify-Analytics" target="_blank" rel="noopener">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem">
-        <span class="project-num">02</span>
+        <span class="project-num">03</span>
         <div class="project-tags">
           <span class="ptag">BigQuery</span>
           <span class="ptag">SQL</span>
@@ -783,10 +801,10 @@ footer {
       <span class="project-link">View on GitHub</span>
     </a>
 
-    <!-- PROJECT 3 -->
+    <!-- PROJECT 04 — NORTHSTAR -->
     <a class="project-card" href="https://github.com/lelongilbert7-gif/Shopify-Northstar-trail-supply-analytics" target="_blank" rel="noopener">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem">
-        <span class="project-num">03</span>
+        <span class="project-num">04</span>
         <div class="project-tags">
           <span class="ptag">BigQuery</span>
           <span class="ptag">SQL</span>
@@ -794,7 +812,7 @@ footer {
         </div>
       </div>
       <h3 class="project-title">Northstar Trail Supply Analytics</h3>
-      <p class="project-desc">End-to-end analysis of a 9-table Shopify dataset — built to mirror the data chaos a real analyst inherits on day one. Full cleaning pipeline, revenue/margin/refund analysis, SKU concentration risk assessment.</p>
+      <p class="project-desc">End-to-end analysis of a 9-table Shopify dataset built to mirror the data chaos a real analyst inherits on day one. Full cleaning pipeline, revenue/margin/refund analysis, SKU concentration risk.</p>
       <div class="project-findings">
         <span class="finding">$286K gross revenue · 5.3% refund rate — full margin waterfall built</span>
         <span class="finding">Top 2 SKUs drive 36%+ of revenue — dangerous SKU concentration risk flagged</span>
@@ -908,8 +926,8 @@ footer {
         <div class="skill-track"><div class="skill-fill" style="width:72%;animation-delay:0.4s"></div></div>
       </div>
       <div class="skill-row">
-        <div class="skill-header"><span class="skill-name">Python / pandas</span><span class="skill-pct">Intermediate</span></div>
-        <div class="skill-track"><div class="skill-fill" style="width:65%;animation-delay:0.5s"></div></div>
+        <div class="skill-header"><span class="skill-name">Python / PySpark</span><span class="skill-pct">Intermediate</span></div>
+        <div class="skill-track"><div class="skill-fill" style="width:68%;animation-delay:0.5s"></div></div>
       </div>
       <div class="skill-row">
         <div class="skill-header"><span class="skill-name">AI-augmented pipelines</span><span class="skill-pct">Core practice</span></div>
@@ -949,7 +967,6 @@ footer {
 </footer>
 
 <script>
-// Custom cursor
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
@@ -976,7 +993,6 @@ document.querySelectorAll('a,button').forEach(el=>{
   });
 });
 
-// Scroll reveal
 const observer = new IntersectionObserver(entries=>{
   entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); observer.unobserve(e.target); } });
 },{threshold:0.08});
