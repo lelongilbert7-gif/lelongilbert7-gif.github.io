@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airline On-Time Performance Lakehouse | Gilbert Kiptoo · BluePeak Analytics</title>
+<meta name="description" content="An end-to-end medallion analytics platform on Microsoft Fabric. Rainy days increase departure delays by 63% — quantified by joining BTS flight records, SQL dimensions, and Open-Meteo weather through a Bronze→Silver→Gold lakehouse.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090F;
+    --surface: #0E1320;
+    --surface2: #151D2E;
+    --border: #1E2D47;
+    --accent: #F59E0B;
+    --accent2: #3B82F6;
+    --text: #E2E8F0;
+    --muted: #64748B;
+    --dim: #94A3B8;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    background: rgba(7,9,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); letter-spacing: 0.08em; text-decoration: none; }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 2.5rem 5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,158,11,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid { position: absolute; inset: 0; opacity: 0.03;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.7rem; color: var(--accent);
+    border: 1px solid rgba(245,158,11,0.3); border-radius: 2rem;
+    padding: 0.35rem 0.9rem; margin-bottom: 2rem;
+    background: rgba(245,158,11,0.06);
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag::before { content: '▸'; }
+  h1 {
+    font-family: var(--serif); font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.08; letter-spacing: -0.02em; color: var(--text);
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    margin-top: 1.5rem; font-size: 1.05rem; color: var(--dim);
+    max-width: 600px; line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-finding {
+    margin-top: 2.5rem; padding: 1.5rem 2rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0.5rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .hero-finding .label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+  .hero-finding p { font-size: 1.05rem; color: var(--text); line-height: 1.5; }
+  .hero-finding strong { color: var(--accent); }
+  .hero-cta { display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; animation: fadeUp 0.6s 0.4s ease both; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem; border-radius: 0.375rem;
+    font-size: 0.85rem; font-weight: 500; text-decoration: none;
+    transition: all 0.2s; cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #FBBF24; transform: translateY(-1px); }
+  .btn-secondary { background: transparent; color: var(--dim); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 2.5rem; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  .section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 1rem; }
+  h2 { font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 1.5rem; line-height: 1.15; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ── METRICS ── */
+  .metrics { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0; }
+  .metric-item {
+    padding: 2.5rem 2rem; border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .metric-item:last-child { border-right: none; }
+  .metric-value { font-family: var(--mono); font-size: 2.2rem; font-weight: 500; color: var(--accent); line-height: 1; }
+  .metric-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; letter-spacing: 0.03em; }
+  .metric-delta { font-family: var(--mono); font-size: 0.72rem; color: #34D399; margin-top: 0.25rem; }
+  .metric-delta.bad { color: #F87171; }
+
+  /* ── ARCHITECTURE ── */
+  .arch-flow {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid var(--border); border-radius: 0.75rem; overflow: hidden;
+    margin-top: 2rem;
+  }
+  .arch-row {
+    display: grid; grid-template-columns: 120px 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .arch-row:last-child { border-bottom: none; }
+  .arch-layer {
+    padding: 1.25rem 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.08em; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .layer-bronze { background: rgba(217,119,6,0.15); color: #FBBF24; }
+  .layer-silver { background: rgba(148,163,184,0.1); color: #CBD5E1; }
+  .layer-gold { background: rgba(234,179,8,0.12); color: #FDE047; }
+  .layer-serve { background: rgba(59,130,246,0.12); color: #93C5FD; }
+  .arch-cell {
+    padding: 1.25rem 1rem; border-right: 1px solid var(--border);
+    font-size: 0.82rem; color: var(--dim);
+  }
+  .arch-cell:last-child { border-right: none; }
+  .arch-cell strong { display: block; color: var(--text); margin-bottom: 0.25rem; font-size: 0.85rem; }
+  .arch-cell .tag { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); }
+  .arch-header { background: var(--surface2); }
+  .arch-header .arch-cell { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.06em; font-weight: 500; }
+
+  /* ── CARRIERS TABLE ── */
+  .table-wrap { overflow-x: auto; margin-top: 2rem; border: 1px solid var(--border); border-radius: 0.75rem; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--surface2); }
+  th { padding: 0.9rem 1.25rem; font-size: 0.72rem; font-weight: 500; color: var(--muted); text-align: left; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+  td { padding: 0.9rem 1.25rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface); }
+  .carrier-code { font-family: var(--mono); color: var(--accent); font-weight: 500; }
+  .bar-cell { display: flex; align-items: center; gap: 0.75rem; }
+  .bar { height: 6px; border-radius: 3px; background: var(--accent); min-width: 4px; }
+  .bar.bad { background: #F87171; }
+  .rank-1 td { background: rgba(245,158,11,0.04); }
+
+  /* ── TECH STACK ── */
+  .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
+  .tech-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 0.625rem; padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .tech-card:hover { border-color: rgba(245,158,11,0.4); }
+  .tech-card-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+  .tech-card h3 { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 0.75rem; }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .pill {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--dim);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 0.25rem 0.6rem; border-radius: 0.25rem;
+  }
+
+  /* ── CERTS TABLE ── */
+  .certs-table { margin-top: 2rem; border: 1px solid var(--border); border-radius: 0.75rem; overflow: hidden; }
+  .cert-row { display: grid; grid-template-columns: 80px 160px 1fr; border-bottom: 1px solid var(--border); }
+  .cert-row:last-child { border-bottom: none; }
+  .cert-row:hover { background: var(--surface); }
+  .cert-badge {
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+    border-right: 1px solid var(--border); padding: 1rem;
+  }
+  .cert-pl300 { color: #93C5FD; background: rgba(59,130,246,0.08); }
+  .cert-dp600 { color: #86EFAC; background: rgba(34,197,94,0.08); }
+  .cert-dp700 { color: #FDE047; background: rgba(234,179,8,0.08); }
+  .cert-domain { padding: 1rem; font-size: 0.8rem; font-weight: 500; border-right: 1px solid var(--border); display: flex; align-items: center; }
+  .cert-skills { padding: 1rem 1.25rem; font-size: 0.8rem; color: var(--dim); display: flex; align-items: center; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 3rem 2.5rem; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
+    background: var(--surface);
+  }
+  .footer-brand { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+  .footer-brand strong { color: var(--accent); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.25rem 4rem; }
+    section { padding: 3.5rem 1.25rem; }
+    .arch-row { grid-template-columns: 72px 1fr; }
+    .arch-cell:nth-child(3), .arch-cell:nth-child(4) { display: none; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .metric-item { border-right: none; border-bottom: 1px solid var(--border); }
+    footer { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="https://lelongilbert7-gif.github.io">BluePeak Analytics</a>
+  <div class="nav-links">
+    <a href="#architecture">Architecture</a>
+    <a href="#findings">Findings</a>
+    <a href="#stack">Stack</a>
+    <a href="#skills">Skills</a>
+    <a href="https://github.com/lelongilbert7-gif/aotp-airline-lakehouse" target="_blank">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">Microsoft Fabric · Project 2 of 3</div>
+    <h1>Airline <em>On-Time</em><br>Performance Lakehouse</h1>
+    <p class="hero-sub">
+      An end-to-end medallion analytics platform built on Microsoft Fabric — 
+      ingesting US flight records, airline dimensions, and live weather data 
+      through a Bronze → Silver → Gold architecture into a Direct Lake semantic model.
+    </p>
+    <div class="hero-finding">
+      <div class="label">KEY FINDING</div>
+      <p>Rainy days (>5mm precipitation) increase average departure delays by <strong>63%</strong> — from 13.8 min to 22.5 min — quantified by independently joining BTS flight records with Open-Meteo weather data across 15 US airports.</p>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/lelongilbert7-gif/aotp-airline-lakehouse" target="_blank">View on GitHub ↗</a>
+      <a class="btn btn-secondary" href="https://www.linkedin.com/in/gilbertkiptoo/" target="_blank">Connect on LinkedIn</a>
+      <a class="btn btn-secondary" href="https://lelongilbert7-gif.github.io">← Portfolio</a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- METRICS -->
+<section class="metrics" id="findings">
+  <div class="metrics-grid">
+    <div class="metric-item reveal">
+      <div class="metric-value" data-count="535253" data-format="comma">0</div>
+      <div class="metric-label">Total Flights Analysed</div>
+    </div>
+    <div class="metric-item reveal">
+      <div class="metric-value" data-count="78.09" data-suffix="%">0</div>
+      <div class="metric-label">Overall On-Time Rate</div>
+    </div>
+    <div class="metric-item reveal">
+      <div class="metric-value" data-count="13.83" data-suffix=" min">0</div>
+      <div class="metric-label">Avg Departure Delay</div>
+      <div class="metric-delta bad">↑ 22.53 min on rainy days</div>
+    </div>
+    <div class="metric-item reveal">
+      <div class="metric-value" data-count="63" data-suffix="%">0</div>
+      <div class="metric-label">Weather Delay Uplift</div>
+      <div class="metric-delta">Independent source validation</div>
+    </div>
+    <div class="metric-item reveal">
+      <div class="metric-value" data-count="15.17" data-suffix="%">0</div>
+      <div class="metric-label">Weather Delay Share</div>
+    </div>
+    <div class="metric-item reveal">
+      <div class="metric-value" data-count="1.52" data-suffix="%">0</div>
+      <div class="metric-label">Cancellation Rate</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="container">
+    <div class="section-label reveal">ARCHITECTURE</div>
+    <h2 class="reveal">Three sources. One lakehouse.</h2>
+    <p class="reveal" style="color:var(--dim); max-width:640px;">
+      A genuinely multi-source pipeline — not one CSV pretending to be three. Each source proves a distinct Fabric ingestion pattern.
+    </p>
+
+    <div class="arch-flow reveal">
+      <div class="arch-row arch-header">
+        <div class="arch-layer" style="background:transparent; color:var(--muted);">LAYER</div>
+        <div class="arch-cell">SOURCE</div>
+        <div class="arch-cell">FABRIC METHOD</div>
+        <div class="arch-cell">OUTPUT</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-layer layer-bronze">BRONZE</div>
+        <div class="arch-cell"><strong>BTS Flight CSVs</strong><span class="tag">538,837 rows · Jan 2023</span></div>
+        <div class="arch-cell"><strong>Pipeline Copy → Lakehouse Files</strong><span class="tag">Appended with _ingest_ts + _source_file</span></div>
+        <div class="arch-cell"><strong>bronze_flights</strong><span class="tag">Raw Delta, all strings, append-only</span></div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-layer layer-bronze">BRONZE</div>
+        <div class="arch-cell"><strong>SQL DB in Fabric</strong><span class="tag">Airlines + airports dims</span></div>
+        <div class="arch-cell"><strong>Mirroring → OneLake Shortcuts</strong><span class="tag">Auto-mirrors, zero replication cost</span></div>
+        <div class="arch-cell"><strong>dbo_1.dim_airline / dim_airport</strong><span class="tag">Readable in Spark via shortcut</span></div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-layer layer-bronze">BRONZE</div>
+        <div class="arch-cell"><strong>Open-Meteo Weather API</strong><span class="tag">15 airports · free, no API key</span></div>
+        <div class="arch-cell"><strong>PySpark notebook (requests)</strong><span class="tag">Daily weather per airport lat/long</span></div>
+        <div class="arch-cell"><strong>bronze_weather</strong><span class="tag">precip, snow, wind, temp — 465 rows</span></div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-layer layer-silver">SILVER</div>
+        <div class="arch-cell"><strong>bronze_flights + bronze_weather</strong><span class="tag">Left join on airport + date</span></div>
+        <div class="arch-cell"><strong>PySpark transforms + casts</strong><span class="tag">Typed, deduplicated, weather-enriched</span></div>
+        <div class="arch-cell"><strong>silver_flights</strong><span class="tag">535,253 rows · 15 columns</span></div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-layer layer-gold">GOLD</div>
+        <div class="arch-cell"><strong>silver_flights</strong><span class="tag">Grouped by carrier + route + date</span></div>
+        <div class="arch-cell"><strong>PySpark agg · V-Order optimized</strong><span class="tag">OPTIMIZE + VACUUM scheduled</span></div>
+        <div class="arch-cell"><strong>gold_agg_carrier_daily</strong><span class="tag">229,870 rows · star schema</span></div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-layer layer-serve">SERVE</div>
+        <div class="arch-cell"><strong>gold_agg_carrier_daily</strong><span class="tag">No refresh step needed</span></div>
+        <div class="arch-cell"><strong>Direct Lake semantic model</strong><span class="tag">Frames to latest Delta version in seconds</span></div>
+        <div class="arch-cell"><strong>sm_aotp · 7 DAX measures</strong><span class="tag">+ Power BI report + Activator alert</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem; padding:1rem 1.25rem; background:var(--surface); border:1px solid var(--border); border-radius:0.5rem; font-size:0.82rem; color:var(--dim);" class="reveal">
+      <span style="color:var(--accent); font-family:var(--mono); font-size:0.68rem;">ORCHESTRATION</span><br>
+      Fabric Data Pipeline <code style="background:var(--surface2); padding:0.1rem 0.4rem; border-radius:0.25rem; font-size:0.78rem;">pl_aotp_daily</code> runs the full chain daily at 06:00 EAT — notebook → semantic model refresh. 
+      Git integration (GitHub) + deployment pipeline <code style="background:var(--surface2); padding:0.1rem 0.4rem; border-radius:0.25rem; font-size:0.78rem;">Dev → Test → Prod</code>.
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CARRIER FINDINGS -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">CARRIER ANALYSIS</div>
+    <h2 class="reveal">Who's actually on time?</h2>
+    <p class="reveal" style="color:var(--dim); max-width:640px;">January 2023 · 15 US carriers · sorted by On-Time %</p>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>CARRIER</th>
+            <th>ON-TIME %</th>
+            <th>AVG DELAY</th>
+            <th>CANCEL RATE</th>
+            <th>WEATHER DELAY SHARE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rank-1">
+            <td><span class="carrier-code">YX</span> Republic Airways</td>
+            <td><div class="bar-cell"><div class="bar" style="width:85px"></div>85.6%</div></td>
+            <td>4.07 min</td>
+            <td>1.32%</td>
+            <td>22.21%</td>
+          </tr>
+          <tr>
+            <td><span class="carrier-code">DL</span> Delta Air Lines</td>
+            <td><div class="bar-cell"><div class="bar" style="width:79px"></div>78.96%</div></td>
+            <td>13.93 min</td>
+            <td style="color:#34D399">0.70%</td>
+            <td>14.52%</td>
+          </tr>
+          <tr>
+            <td><span class="carrier-code">AA</span> American Airlines</td>
+            <td><div class="bar-cell"><div class="bar" style="width:78px"></div>78.14%</div></td>
+            <td>16.63 min</td>
+            <td>1.26%</td>
+            <td>11.24%</td>
+          </tr>
+          <tr>
+            <td><span class="carrier-code">WN</span> Southwest Airlines</td>
+            <td><div class="bar-cell"><div class="bar" style="width:75px"></div>75.07%</div></td>
+            <td>12.40 min</td>
+            <td>2.10%</td>
+            <td>6.25%</td>
+          </tr>
+          <tr>
+            <td><span class="carrier-code">B6</span> JetBlue Airways</td>
+            <td><div class="bar-cell"><div class="bar bad" style="width:73px"></div>73.14%</div></td>
+            <td>18.21 min</td>
+            <td>0.77%</td>
+            <td>1.80%</td>
+          </tr>
+          <tr>
+            <td><span class="carrier-code">NK</span> Spirit Airlines</td>
+            <td><div class="bar-cell"><div class="bar bad" style="width:69px"></div>69.32%</div></td>
+            <td>18.22 min</td>
+            <td>2.12%</td>
+            <td>6.43%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="reveal" style="margin-top:1rem; font-size:0.78rem; color:var(--muted);">
+      OO (SkyWest) has the highest weather delay share at 28.85% — when they're late, weather is the culprit more than any other carrier. DL has the lowest cancellation rate at 0.70% despite not leading on-time %. These patterns emerge directly from the BTS + Open-Meteo join.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="container">
+    <div class="section-label reveal">TECH STACK</div>
+    <h2 class="reveal">Built with production tools.</h2>
+
+    <div class="tech-grid">
+      <div class="tech-card reveal">
+        <div class="tech-card-label">DATA ENGINEERING</div>
+        <h3>Medallion Pipeline</h3>
+        <div class="pills">
+          <span class="pill">PySpark</span>
+          <span class="pill">Delta Lake</span>
+          <span class="pill">Spark Notebooks</span>
+          <span class="pill">MERGE / SCD</span>
+          <span class="pill">V-Order</span>
+          <span class="pill">OPTIMIZE</span>
+          <span class="pill">VACUUM</span>
+        </div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-card-label">DATA INGESTION</div>
+        <h3>Multi-Source Ingest</h3>
+        <div class="pills">
+          <span class="pill">Fabric Mirroring</span>
+          <span class="pill">OneLake Shortcuts</span>
+          <span class="pill">SQL DB in Fabric</span>
+          <span class="pill">REST API (requests)</span>
+          <span class="pill">Pipeline Copy</span>
+          <span class="pill">Incremental Load</span>
+        </div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-card-label">ANALYTICS & SERVING</div>
+        <h3>Semantic Layer</h3>
+        <div class="pills">
+          <span class="pill">Direct Lake</span>
+          <span class="pill">DAX</span>
+          <span class="pill">XMLA Endpoint</span>
+          <span class="pill">Power BI</span>
+          <span class="pill">Activator Alerts</span>
+        </div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-card-label">LIFECYCLE & OPS</div>
+        <h3>CI/CD & Deployment</h3>
+        <div class="pills">
+          <span class="pill">Git (GitHub)</span>
+          <span class="pill">Deployment Pipeline</span>
+          <span class="pill">Dev → Test → Prod</span>
+          <span class="pill">Deployment Rules</span>
+          <span class="pill">Monitoring Hub</span>
+          <span class="pill">Scheduled Pipeline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SKILLS / CERTS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label reveal">CERTIFICATIONS DEMONSTRATED</div>
+    <h2 class="reveal">One project. Three exams.</h2>
+
+    <div class="certs-table reveal">
+      <div class="cert-row">
+        <div class="cert-badge cert-pl300">PL-300</div>
+        <div class="cert-domain">Data Visualization</div>
+        <div class="cert-skills">DAX measures, calculated columns, bar charts, scatter plots, KPI cards, filter context, measure branching</div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-badge cert-dp600">DP-600</div>
+        <div class="cert-domain">Lakehouse & Spark</div>
+        <div class="cert-skills">Medallion architecture, PySpark transforms, Delta MERGE/SCD Type 2, deduplication, Direct Lake, XMLA</div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-badge cert-dp600">DP-600</div>
+        <div class="cert-domain">Data Integration</div>
+        <div class="cert-skills">Pipeline Copy activity, incremental loading, REST API ingestion, Dataflow Gen2 concepts</div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-badge cert-dp700">DP-700</div>
+        <div class="cert-domain">Ingest & Transform</div>
+        <div class="cert-skills">Mirroring, OneLake Shortcuts, SQL database in Fabric, Delta OPTIMIZE/VACUUM, V-Order optimization</div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-badge cert-dp700">DP-700</div>
+        <div class="cert-domain">Implement & Manage</div>
+        <div class="cert-skills">Git integration (GitHub), deployment pipelines Dev→Test→Prod, deployment rules, workspace management</div>
+      </div>
+      <div class="cert-row">
+        <div class="cert-badge cert-dp700">DP-700</div>
+        <div class="cert-domain">Monitor & Optimize</div>
+        <div class="cert-skills">Activator alerts, Spark monitoring hub, pipeline scheduling, capacity management, Deployment history</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    Built by <strong>Gilbert Kiptoo</strong> · <strong>BluePeak Analytics</strong><br>
+    <span style="font-size:0.68rem;">Microsoft Fabric DP-600 Certified · Nairobi, Kenya</span>
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/lelongilbert7-gif/aotp-airline-lakehouse" target="_blank">GitHub Repo</a>
+    <a href="https://www.linkedin.com/in/gilbertkiptoo/" target="_blank">LinkedIn</a>
+    <a href="https://lelongilbert7-gif.github.io">Portfolio</a>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Animated counters
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const format = el.dataset.format;
+  const duration = 1800;
+  const start = performance.now();
+  const isFloat = target % 1 !== 0;
+
+  function update(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = target * eased;
+    if (format === 'comma') {
+      el.textContent = Math.floor(current).toLocaleString() + suffix;
+    } else if (isFloat) {
+      el.textContent = current.toFixed(2) + suffix;
+    } else {
+      el.textContent = Math.floor(current) + suffix;
+    }
+    if (progress < 1) requestAnimationFrame(update);
+    else {
+      if (format === 'comma') el.textContent = target.toLocaleString() + suffix;
+      else el.textContent = (isFloat ? target.toFixed(2) : target) + suffix;
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.target.textContent === '0') {
+      animateCounter(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>
